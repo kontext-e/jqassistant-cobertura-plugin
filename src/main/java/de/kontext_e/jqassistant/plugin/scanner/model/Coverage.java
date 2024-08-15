@@ -1,4 +1,4 @@
-package de.kontext_e.jqassistant.plugin.model;
+package de.kontext_e.jqassistant.plugin.scanner.model;
 
 import jakarta.xml.bind.annotation.*;
 import lombok.Getter;

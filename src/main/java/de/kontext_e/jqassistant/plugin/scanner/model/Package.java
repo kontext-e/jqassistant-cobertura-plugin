@@ -1,4 +1,4 @@
-package de.kontext_e.jqassistant.plugin.model;
+package de.kontext_e.jqassistant.plugin.scanner.model;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -10,23 +10,21 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ClassCoverage {
+public class Package {
 
     @XmlAttribute(name = "name")
     private String name;
 
     @XmlAttribute(name = "line-rate")
-    private String lineRate;
+    private float lineRate;
 
     @XmlAttribute(name = "branch-rate")
-    private String branchRate;
+    private float branchRate;
 
     @XmlAttribute(name = "complexity")
-    private String complexity;
+    private int complexity;
 
-
-    @XmlElement(name = "method")
-    @XmlElementWrapper(name = "methods")
-    private List<MethodCoverage> method;
-
+    @XmlElement(name = "class")
+    @XmlElementWrapper(name = "classes")
+    private List<ClassCoverage> classes;
 }
