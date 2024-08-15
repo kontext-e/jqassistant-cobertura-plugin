@@ -4,12 +4,17 @@ plugins {
 
 group = 'de.kontext-e.jqassistant.plugin'
 version = '0.1.0-SNAPSHOT'
+project.ext["jqaversion"] = "2.1.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation 'com.buschmais.jqassistant.core:scanner:' + project.jqaversion
+    implementation 'com.buschmais.jqassistant.core:report:' + project.jqaversion
+    implementation 'com.buschmais.jqassistant.plugin:common:' + project.jqaversion
+    implementation 'com.buschmais.jqassistant.core:store:' + project.jqaversion
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.2'
     implementation 'org.slf4j:slf4j-simple:2.0.13'
