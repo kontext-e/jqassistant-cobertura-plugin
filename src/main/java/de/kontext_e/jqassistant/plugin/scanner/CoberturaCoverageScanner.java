@@ -33,13 +33,20 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
 
     @Override
     public CoberturaDescriptor scan(FileResource item, String path, Scope scope, Scanner scanner) throws IOException {
+        LOGGER.info("Found Cobertura report: {}", item.getFile());
         store = scanner.getContext().getStore();
-        File coverageReport = item.getFile();
+        FileDescriptor fileDescriptor = scanner.getContext().getCurrentDescriptor();
+        CoberturaDescriptor coberturaDescriptor = store.addDescriptorType(fileDescriptor, CoberturaDescriptor.class);
 
-        Coverage coverage = readCoverageReport(coverageReport);
+        Coverage coverage = readCoverageReport(item.getFile());
         if (coverage != null) {
             saveCoverageToNeo4J(coverage);
+            LOGGER.info("Saved Cobertura coverage report: {}", item.getFile());
+        } else {
+            LOGGER.warn("Error while reading Cobertura coverage report: {}, skipping ...", item.getFile());
         }
+
+        return coberturaDescriptor;
     }
 
     private static Coverage readCoverageReport(File file) {
@@ -68,6 +75,6 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
     }
 
     private void analyzeClasses(ClassCoverage className) {
-
+        //TODO Deal with generated classes (async, local methods, etc ...)
     }
 }
