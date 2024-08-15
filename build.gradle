@@ -10,6 +10,12 @@ repositories {
 }
 
 dependencies {
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.2'
+    implementation 'org.slf4j:slf4j-simple:2.0.13'
+
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
