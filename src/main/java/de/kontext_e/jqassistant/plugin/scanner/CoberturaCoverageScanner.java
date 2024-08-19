@@ -8,7 +8,7 @@ import com.buschmais.jqassistant.plugin.common.api.model.FileDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractScannerPlugin;
 import com.buschmais.jqassistant.plugin.common.api.scanner.filesystem.FileResource;
 import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
-import de.kontext_e.jqassistant.plugin.scanner.model.Package;
+import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoberturaDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.model.Coverage;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor;
@@ -63,7 +63,7 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         coverage.getPackages().forEach(this::analyzePackage);
     }
 
-    private void analyzePackage(Package packageCoverage) {
+    private void analyzePackage(PackageCoverage packageCoverage) {
         PackageCoverageDescriptor descriptor = store.create(PackageCoverageDescriptor.class);
 
         descriptor.setName(packageCoverage.getName());

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Package {
+public class PackageCoverage {
 
     @XmlAttribute(name = "name")
     private String name;

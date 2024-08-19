@@ -14,6 +14,6 @@ public class Coverage {
 
     @XmlElement(name = "package")
     @XmlElementWrapper(name = "packages")
-    private List<Package> packages;
+    private List<PackageCoverage> packages;
 
 }
