@@ -3,6 +3,7 @@ package de.kontext_e.jqassistant.plugin.scanner;
 import com.buschmais.jqassistant.core.store.api.Store;
 import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.model.CoverageReport;
+import de.kontext_e.jqassistant.plugin.scanner.model.MethodCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoverageFileDescriptor;
@@ -12,8 +13,12 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CoberturaCoverageScanner {
+    public static final String ASYNC_METHOD_REGEX = "(?<ClassName>.+)(/|\\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext$";
+    public static final String LOCAL_METHOD_REGEX = ".*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\\|]+)\\|.*";
     public final Store store;
 
     public CoberturaCoverageScanner(Store store) {
@@ -55,27 +60,60 @@ public class CoberturaCoverageScanner {
     }
 
     public ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
-        //TODO See what "CleanUpRegex" is all about
+        if (classCoverage.getName().contains("$")) return null;
 
         ClassCoverageDescriptor descriptor = store.create(ClassCoverageDescriptor.class);
 
-        descriptor.setName(classCoverage.getName());
+        descriptor.setName(parseClassName(classCoverage.getName()));
         descriptor.setLineRate(classCoverage.getLineRate());
         descriptor.setBranchRate(classCoverage.getBranchRate());
         descriptor.setComplexity(classCoverage.getComplexity());
         descriptor.setFileName(classCoverage.getFileName());
 
-        for (MethodCoverageDescriptor methodCoverageDescriptor : descriptor.getMethods()) {
-            MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverageDescriptor);
-            descriptor.getMethods().add(methodDescriptor);
+        for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
+            MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
+//            descriptor.getMethods().add(methodDescriptor);
         }
 
         return descriptor;
     }
 
-    public MethodCoverageDescriptor analyzeMethod(MethodCoverageDescriptor methodCoverageDescriptor) {
+    private String parseClassName(String className) {
+        if (className == null) return "";
 
+        int nestedClassSeparatorIndex = className.indexOf("/");
+        if (nestedClassSeparatorIndex > -1) return className.substring(0, nestedClassSeparatorIndex);
+
+        // TODO Cannot Check Generic Classes due to missing test data
+        // if (className.contains("<")) {
+        //     String cleanedUpClassName = className.replaceAll(".<.*>\\\\w_?_?\\\\w*\\\\d*", "");
+        //     Pattern pattern = Pattern.compile("(?<ClassName>.+)(?<GenericTypes><.+>)$");
+        //     Matcher matcher = pattern.matcher(cleanedUpClassName);
+        // }
+        return className;
+    }
+
+    public MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
+        String methodName = parseMethodName(methodCoverage, classCoverage);
 
         return null;
+    }
+
+    private static String parseMethodName(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
+        String methodName = methodCoverage.getName();
+        String className = classCoverage.getName();
+        String fqnOfMethod = className + methodName;
+
+        Matcher localMethodMatcher = Pattern.compile(LOCAL_METHOD_REGEX).matcher(fqnOfMethod);
+        if (fqnOfMethod.contains("|") && localMethodMatcher.find()) {
+            return localMethodMatcher.group("NestedMethodName");
+        }
+
+        Matcher asyncMethodMatcher = Pattern.compile(ASYNC_METHOD_REGEX).matcher(fqnOfMethod);
+        if (methodName.contains("MoveNext") && asyncMethodMatcher.find()){
+            return asyncMethodMatcher.group("CompilerGeneratedName");
+        }
+
+        return methodName;
     }
 }

@@ -28,6 +28,6 @@ public class ClassCoverage {
 
     @XmlElement(name = "method")
     @XmlElementWrapper(name = "methods")
-    private List<MethodCoverage> method;
+    private List<MethodCoverage> methods;
 
 }
