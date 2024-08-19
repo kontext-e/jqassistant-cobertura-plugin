@@ -15,13 +15,13 @@ public class MethodCoverage {
     private String name;
 
     @XmlAttribute(name = "line-rate")
-    private String lineRate;
+    private float lineRate;
 
     @XmlAttribute(name = "branch-rate")
-    private String branchRate;
+    private float branchRate;
 
     @XmlAttribute(name = "complexity")
-    private String complexity;
+    private int complexity;
 
     @XmlAttribute(name = "signature")
     private String signature;

@@ -41,7 +41,7 @@ public class CoberturaCoverageScanner {
         }
     }
 
-    public PackageCoverageDescriptor analyzePackage(PackageCoverage packageCoverage) {
+    private PackageCoverageDescriptor analyzePackage(PackageCoverage packageCoverage) {
         PackageCoverageDescriptor descriptor = store.create(PackageCoverageDescriptor.class);
 
         descriptor.setName(packageCoverage.getName());
@@ -59,7 +59,7 @@ public class CoberturaCoverageScanner {
         return descriptor;
     }
 
-    public ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
+    private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
         if (classCoverage.getName().contains("$")) return null;
 
         ClassCoverageDescriptor descriptor = store.create(ClassCoverageDescriptor.class);
@@ -72,7 +72,7 @@ public class CoberturaCoverageScanner {
 
         for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
             MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
-//            descriptor.getMethods().add(methodDescriptor);
+            descriptor.getMethods().add(methodDescriptor);
         }
 
         return descriptor;
@@ -93,10 +93,16 @@ public class CoberturaCoverageScanner {
         return className;
     }
 
-    public MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
-        String methodName = parseMethodName(methodCoverage, classCoverage);
+    private MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
+        MethodCoverageDescriptor descriptor = store.create(MethodCoverageDescriptor.class);
 
-        return null;
+        descriptor.setName(parseMethodName(methodCoverage, classCoverage));
+        descriptor.setLineRate(methodCoverage.getLineRate());
+        descriptor.setBranchRate(methodCoverage.getBranchRate());
+        descriptor.setComplexity(methodCoverage.getComplexity());
+        descriptor.setSignature(methodCoverage.getSignature());
+
+        return descriptor;
     }
 
     private static String parseMethodName(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
