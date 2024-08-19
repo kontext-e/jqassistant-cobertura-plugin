@@ -9,11 +9,8 @@ import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractScannerPlugin
 import com.buschmais.jqassistant.plugin.common.api.scanner.filesystem.FileResource;
 import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoberturaDescriptor;
+import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.*;
 import de.kontext_e.jqassistant.plugin.scanner.model.Coverage;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoveageDescriptor;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.slf4j.Logger;
@@ -38,17 +35,17 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         LOGGER.info("Found Cobertura report: {}", item.getFile());
         store = scanner.getContext().getStore();
         FileDescriptor fileDescriptor = scanner.getContext().getCurrentDescriptor();
-        CoberturaDescriptor coberturaDescriptor = store.addDescriptorType(fileDescriptor, CoberturaDescriptor.class);
+        CoverageFileDescriptor coverageFileDescriptor = store.addDescriptorType(fileDescriptor, CoverageFileDescriptor.class);
 
         Coverage coverage = readCoverageReport(item.getFile());
         if (coverage != null) {
-            saveCoverageToNeo4J(coverage);
+            saveCoverageToNeo4J(coverage, coverageFileDescriptor);
             LOGGER.info("Saved Cobertura coverage report: {}", item.getFile());
         } else {
             LOGGER.warn("Error while reading Cobertura coverage report: {}, skipping ...", item.getFile());
         }
 
-        return coberturaDescriptor;
+        return coverageFileDescriptor;
     }
 
     private static Coverage readCoverageReport(File file) {
@@ -61,11 +58,13 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         }
     }
 
-    private void saveCoverageToNeo4J(Coverage coverage) {
-        coverage.getPackages().forEach(this::analyzePackage);
+    private void saveCoverageToNeo4J(Coverage coverage, CoverageFileDescriptor coverageFileDescriptor) {
+        for (PackageCoverage packageCoverage : coverage.getPackages()) {
+            coverageFileDescriptor.getPackages().add(analyzePackage(packageCoverage));
+        }
     }
 
-    private void analyzePackage(PackageCoverage packageCoverage) {
+    private PackageCoverageDescriptor analyzePackage(PackageCoverage packageCoverage) {
         PackageCoverageDescriptor descriptor = store.create(PackageCoverageDescriptor.class);
 
         descriptor.setName(packageCoverage.getName());
@@ -80,6 +79,7 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
             descriptor.getClasses().add(analyzeClass(classCoverage));
         }
 
+        return descriptor;
     }
 
     private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
