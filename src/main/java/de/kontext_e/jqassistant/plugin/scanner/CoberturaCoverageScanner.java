@@ -8,9 +8,9 @@ import com.buschmais.jqassistant.plugin.common.api.model.FileDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractScannerPlugin;
 import com.buschmais.jqassistant.plugin.common.api.scanner.filesystem.FileResource;
 import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
+import de.kontext_e.jqassistant.plugin.scanner.model.CoverageReport;
 import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.*;
-import de.kontext_e.jqassistant.plugin.scanner.model.Coverage;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.slf4j.Logger;
@@ -37,9 +37,9 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         FileDescriptor fileDescriptor = scanner.getContext().getCurrentDescriptor();
         CoverageFileDescriptor coverageFileDescriptor = store.addDescriptorType(fileDescriptor, CoverageFileDescriptor.class);
 
-        Coverage coverage = readCoverageReport(item.getFile());
-        if (coverage != null) {
-            saveCoverageToNeo4J(coverage, coverageFileDescriptor);
+        CoverageReport coverageReport = readCoverageReport(item.getFile());
+        if (coverageReport != null) {
+            saveCoverageToNeo4J(coverageReport, coverageFileDescriptor);
             LOGGER.info("Saved Cobertura coverage report: {}", item.getFile());
         } else {
             LOGGER.warn("Error while reading Cobertura coverage report: {}, skipping ...", item.getFile());
@@ -48,18 +48,18 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         return coverageFileDescriptor;
     }
 
-    private static Coverage readCoverageReport(File file) {
+    private static CoverageReport readCoverageReport(File file) {
         try {
-            JAXBContext context = JAXBContext.newInstance(Coverage.class);
-            return (Coverage) context.createUnmarshaller().unmarshal(file);
+            JAXBContext context = JAXBContext.newInstance(CoverageReport.class);
+            return (CoverageReport) context.createUnmarshaller().unmarshal(file);
         } catch (JAXBException e) {
             LOGGER.warn("Error reading coverage file", e);
             return null;
         }
     }
 
-    private void saveCoverageToNeo4J(Coverage coverage, CoverageFileDescriptor coverageFileDescriptor) {
-        for (PackageCoverage packageCoverage : coverage.getPackages()) {
+    private void saveCoverageToNeo4J(CoverageReport coverageReport, CoverageFileDescriptor coverageFileDescriptor) {
+        for (PackageCoverage packageCoverage : coverageReport.getPackages()) {
             coverageFileDescriptor.getPackages().add(analyzePackage(packageCoverage));
         }
     }

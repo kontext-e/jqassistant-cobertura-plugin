@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @XmlRootElement(name = "coverage")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Coverage {
+public class CoverageReport {
 
     @XmlElement(name = "package")
     @XmlElementWrapper(name = "packages")
