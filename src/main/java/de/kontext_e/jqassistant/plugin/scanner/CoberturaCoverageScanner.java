@@ -78,6 +78,7 @@ public class CoberturaCoverageScanner {
         return descriptor;
     }
 
+    // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
     private String parseClassName(String className) {
         if (className == null) return "";
 
@@ -105,6 +106,7 @@ public class CoberturaCoverageScanner {
         return descriptor;
     }
 
+    // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
     private static String parseMethodName(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
         String methodName = methodCoverage.getName();
         String className = classCoverage.getName();
