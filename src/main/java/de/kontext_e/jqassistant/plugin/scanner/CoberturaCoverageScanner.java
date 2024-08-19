@@ -1,6 +1,7 @@
 package de.kontext_e.jqassistant.plugin.scanner;
 
 import com.buschmais.jqassistant.core.store.api.Store;
+import de.kontext_e.jqassistant.plugin.scanner.caches.ClassCache;
 import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.model.CoverageReport;
 import de.kontext_e.jqassistant.plugin.scanner.model.MethodCoverage;
@@ -17,12 +18,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CoberturaCoverageScanner {
+
     public static final String ASYNC_METHOD_REGEX = "(?<ClassName>.+)(/|\\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext$";
     public static final String LOCAL_METHOD_REGEX = ".*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\\|]+)\\|.*";
-    public final Store store;
+
+    private final Store store;
+    private final ClassCache classCache;
 
     public CoberturaCoverageScanner(Store store) {
         this.store = store;
+        this.classCache = new ClassCache(store);
     }
 
     public static CoverageReport readCoverageReport(File file) {
@@ -53,7 +58,9 @@ public class CoberturaCoverageScanner {
             //Exclude compiler-generated classes
             if (classCoverage.getName().contains("$")) continue;
 
-            descriptor.getClasses().add(analyzeClass(classCoverage));
+            ClassCoverageDescriptor classDescriptor = analyzeClass(classCoverage);
+            if (descriptor.getClasses().contains(classDescriptor)) continue;
+            descriptor.getClasses().add(classDescriptor);
         }
 
         return descriptor;
@@ -62,9 +69,11 @@ public class CoberturaCoverageScanner {
     private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
         if (classCoverage.getName().contains("$")) return null;
 
-        ClassCoverageDescriptor descriptor = store.create(ClassCoverageDescriptor.class);
+        String properClassName = parseClassName(classCoverage.getName());
 
-        descriptor.setName(parseClassName(classCoverage.getName()));
+        ClassCoverageDescriptor descriptor = classCache.findOrCreate(properClassName, classCoverage.getFileName());
+
+        descriptor.setName(properClassName);
         descriptor.setLineRate(classCoverage.getLineRate());
         descriptor.setBranchRate(classCoverage.getBranchRate());
         descriptor.setComplexity(classCoverage.getComplexity());

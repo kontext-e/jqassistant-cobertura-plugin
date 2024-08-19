@@ -23,7 +23,7 @@ public class ClassCoverage {
     @XmlAttribute(name = "complexity")
     private int complexity;
 
-    @XmlAttribute(name = "fileName")
+    @XmlAttribute(name = "filename")
     private String fileName;
 
     @XmlElement(name = "method")
