@@ -1,0 +1,19 @@
+<jqassistant-plugin xmlns="http://schema.jqassistant.org/plugin/v2.2"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://schema.jqassistant.org/plugin/v2.2 https://schema.jqassistant.org/plugin/jqassistant-plugin-v2.2.xsd"
+                    id="jqa.plugin.cobertura"
+                    name="jQAssistant Cobertura Plugin">
+    <description>Scans Cobertura Test Reports</description>
+    <model>
+        <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoverageFileDescriptor</class>
+        <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoberturaDescriptor</class>
+        <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor</class>
+        <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoverageDescriptor</class>
+        <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor</class>
+    </model>
+    <scanner>
+        <class>de.kontext_e.jqassistant.plugin.scanner.CoberturaCoveragePlugin</class>
+    </scanner>
+
+
+</jqassistant-plugin>
