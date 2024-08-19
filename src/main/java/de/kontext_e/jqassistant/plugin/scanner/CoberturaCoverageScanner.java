@@ -93,15 +93,15 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         descriptor.setComplexity(classCoverage.getComplexity());
         descriptor.setFileName(classCoverage.getFileName());
 
-        for (MethodCoveageDescriptor methodCoveageDescriptor : descriptor.getMethods()) {
-            MethodCoveageDescriptor methodDescriptor = analyzeMethod(methodCoveageDescriptor);
+        for (MethodCoverageDescriptor methodCoverageDescriptor : descriptor.getMethods()) {
+            MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverageDescriptor);
             descriptor.getMethods().add(methodDescriptor);
         }
 
         return descriptor;
     }
 
-    private MethodCoveageDescriptor analyzeMethod(MethodCoveageDescriptor methodCoveageDescriptor) {
+    private MethodCoverageDescriptor analyzeMethod(MethodCoverageDescriptor methodCoverageDescriptor) {
         return null;
     }
 }

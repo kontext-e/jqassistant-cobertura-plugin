@@ -30,6 +30,6 @@ public interface ClassCoverageDescriptor extends CoberturaDescriptor {
     void setFileName(String fileName);
 
     @Relation("HAS_METHOD")
-    List<MethodCoveageDescriptor> getMethods();
-    void setMethods(List<MethodCoveageDescriptor> methods);
+    List<MethodCoverageDescriptor> getMethods();
+    void setMethods(List<MethodCoverageDescriptor> methods);
 }

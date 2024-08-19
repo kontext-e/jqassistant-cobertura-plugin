@@ -3,7 +3,7 @@ package de.kontext_e.jqassistant.plugin.scanner.store.descriptor;
 
 import com.buschmais.xo.neo4j.api.annotation.Property;
 
-public interface MethodCoveageDescriptor extends CoberturaDescriptor{
+public interface MethodCoverageDescriptor extends CoberturaDescriptor{
 
 
     @Property("lineRate")
