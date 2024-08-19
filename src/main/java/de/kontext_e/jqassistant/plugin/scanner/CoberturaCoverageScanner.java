@@ -9,8 +9,10 @@ import com.buschmais.jqassistant.plugin.common.api.scanner.AbstractScannerPlugin
 import com.buschmais.jqassistant.plugin.common.api.scanner.filesystem.FileResource;
 import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
+import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoberturaDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.model.Coverage;
+import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoveageDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -71,10 +73,35 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         descriptor.setBranchRate(packageCoverage.getBranchRate());
         descriptor.setComplexity(packageCoverage.getComplexity());
 
-        packageCoverage.getClasses().forEach(this::analyzeClasses);
+        for (ClassCoverage classCoverage : packageCoverage.getClasses()) {
+            //Exclude compiler-generated classes
+            if (classCoverage.getName().contains("$")) continue;
+
+            descriptor.getClasses().add(analyzeClass(classCoverage));
+        }
+
     }
 
-    private void analyzeClasses(ClassCoverage className) {
-        //TODO Deal with generated classes (async, local methods, etc ...)
+    private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
+        //TODO See what "CleanUpRegex" is all about
+
+        ClassCoverageDescriptor descriptor = store.create(ClassCoverageDescriptor.class);
+
+        descriptor.setName(classCoverage.getName());
+        descriptor.setLineRate(classCoverage.getLineRate());
+        descriptor.setBranchRate(classCoverage.getBranchRate());
+        descriptor.setComplexity(classCoverage.getComplexity());
+        descriptor.setFileName(classCoverage.getFileName());
+
+        for (MethodCoveageDescriptor methodCoveageDescriptor : descriptor.getMethods()) {
+            MethodCoveageDescriptor methodDescriptor = analyzeMethod(methodCoveageDescriptor);
+            descriptor.getMethods().add(methodDescriptor);
+        }
+
+        return descriptor;
+    }
+
+    private MethodCoveageDescriptor analyzeMethod(MethodCoveageDescriptor methodCoveageDescriptor) {
+        return null;
     }
 }
