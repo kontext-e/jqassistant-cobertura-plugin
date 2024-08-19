@@ -20,9 +20,9 @@ import java.io.File;
 import java.io.IOException;
 
 @ScannerPlugin.Requires(FileDescriptor.class)
-public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource, CoberturaDescriptor> {
+public class CoberturaCoveragePlugin extends AbstractScannerPlugin<FileResource, CoberturaDescriptor> {
 
-    static Logger LOGGER = LoggerFactory.getLogger(CoberturaCoverageScanner.class);
+    static Logger LOGGER = LoggerFactory.getLogger(CoberturaCoveragePlugin.class);
     private Store store;
 
     @Override
@@ -48,7 +48,7 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         return coverageFileDescriptor;
     }
 
-    private static CoverageReport readCoverageReport(File file) {
+    public static CoverageReport readCoverageReport(File file) {
         try {
             JAXBContext context = JAXBContext.newInstance(CoverageReport.class);
             return (CoverageReport) context.createUnmarshaller().unmarshal(file);
@@ -58,7 +58,7 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
         }
     }
 
-    private void saveCoverageToNeo4J(CoverageReport coverageReport, CoverageFileDescriptor coverageFileDescriptor) {
+    public void saveCoverageToNeo4J(CoverageReport coverageReport, CoverageFileDescriptor coverageFileDescriptor) {
         for (PackageCoverage packageCoverage : coverageReport.getPackages()) {
             coverageFileDescriptor.getPackages().add(analyzePackage(packageCoverage));
         }
@@ -102,6 +102,8 @@ public class CoberturaCoverageScanner extends AbstractScannerPlugin<FileResource
     }
 
     private MethodCoverageDescriptor analyzeMethod(MethodCoverageDescriptor methodCoverageDescriptor) {
+
+
         return null;
     }
 }
