@@ -1,9 +1,9 @@
 package de.kontext_e.jqassistant.plugin.scanner.model;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,5 +27,20 @@ public class MethodCoverage {
 
     @XmlAttribute(name = "signature")
     private String signature;
+
+    @XmlElement(name = "line")
+    @XmlElementWrapper(name = "lines")
+    private List<LineCoverage> lines;
+
+    private int firstLine;
+    private int lastLine;
+
+    public int getFirstLine() {
+        return lines.stream().map(LineCoverage::getNumber).min(Integer::compareTo).orElse(0);
+    }
+
+    public int getLastLine() {
+        return lines.stream().map(LineCoverage::getNumber).max(Integer::compareTo).orElse(0);
+    }
 
 }

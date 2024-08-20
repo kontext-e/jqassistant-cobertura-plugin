@@ -82,6 +82,10 @@ public class CoberturaCoverageScanner {
             descriptor.getMethods().add(methodDescriptor);
         }
 
+        //Must be done after methods have been analyzed
+        descriptor.setFirstLine(classCoverage.getFirstLine());
+        descriptor.setLastLine(classCoverage.getLastLine());
+
         return descriptor;
     }
 
@@ -106,6 +110,8 @@ public class CoberturaCoverageScanner {
         descriptor.setBranchRate(methodCoverage.getBranchRate());
         descriptor.setComplexity(methodCoverage.getComplexity());
         descriptor.setSignature(methodCoverage.getSignature());
+        descriptor.setFirstLine(methodCoverage.getFirstLine());
+        descriptor.setLastLine(methodCoverage.getLastLine());
 
         return descriptor;
     }

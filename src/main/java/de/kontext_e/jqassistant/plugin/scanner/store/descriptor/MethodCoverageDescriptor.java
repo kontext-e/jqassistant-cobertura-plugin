@@ -7,7 +7,6 @@ import com.buschmais.xo.neo4j.api.annotation.Property;
 @Label("Method")
 public interface MethodCoverageDescriptor extends CoberturaDescriptor{
 
-
     @Property("lineRate")
     float getLineRate();
     void setLineRate(float lineRate);
@@ -27,5 +26,13 @@ public interface MethodCoverageDescriptor extends CoberturaDescriptor{
     @Property("signature")
     String getSignature();
     void setSignature(String signature);
+
+    @Property("firstLine")
+    int getFirstLine();
+    void setFirstLine(int firstLine);
+
+    @Property("lastLine")
+    int getLastLine();
+    void setLastLine(int lastLine);
 
 }

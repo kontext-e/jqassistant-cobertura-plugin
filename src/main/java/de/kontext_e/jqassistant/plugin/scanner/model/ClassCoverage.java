@@ -32,4 +32,15 @@ public class ClassCoverage {
     @XmlElementWrapper(name = "methods")
     private List<MethodCoverage> methods;
 
+    private int firstLine;
+    private int lastLine;
+
+    public int getFirstLine() {
+        return methods.stream().map(MethodCoverage::getFirstLine).min(Integer::compareTo).orElse(0);
+    }
+
+    public int getLastLine() {
+        return methods.stream().map(MethodCoverage::getLastLine).max(Integer::compareTo).orElse(0);
+    }
+
 }

@@ -32,4 +32,12 @@ public interface ClassCoverageDescriptor extends CoberturaDescriptor {
     @Relation("HAS_METHOD")
     List<MethodCoverageDescriptor> getMethods();
     void setMethods(List<MethodCoverageDescriptor> methods);
+
+    @Property("firstLine")
+    int getFirstLine();
+    void setFirstLine(int firstLine);
+
+    @Property("lastLine")
+    int getLastLine();
+    void setLastLine(int lastLine);
 }
