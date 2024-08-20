@@ -3,11 +3,13 @@ package de.kontext_e.jqassistant.plugin.scanner.model;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MethodCoverage {
 

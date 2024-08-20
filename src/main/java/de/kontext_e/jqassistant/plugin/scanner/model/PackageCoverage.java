@@ -1,6 +1,7 @@
 package de.kontext_e.jqassistant.plugin.scanner.model;
 
 import jakarta.xml.bind.annotation.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PackageCoverage {
 
@@ -26,4 +28,5 @@ public class PackageCoverage {
     @XmlElement(name = "class")
     @XmlElementWrapper(name = "classes")
     private List<ClassCoverage> classes;
+
 }
