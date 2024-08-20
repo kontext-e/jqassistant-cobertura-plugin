@@ -1,15 +1,15 @@
 package de.kontext_e.jqassistant.plugin.scanner.model;
 
 import jakarta.xml.bind.annotation.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PackageCoverage {
 

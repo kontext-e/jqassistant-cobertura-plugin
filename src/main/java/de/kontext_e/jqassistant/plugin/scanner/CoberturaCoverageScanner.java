@@ -67,8 +67,6 @@ public class CoberturaCoverageScanner {
     }
 
     private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
-        if (classCoverage.getName().contains("$")) return null;
-
         String properClassName = parseClassName(classCoverage.getName());
 
         ClassCoverageDescriptor descriptor = classCache.findOrCreate(properClassName, classCoverage.getFileName());
