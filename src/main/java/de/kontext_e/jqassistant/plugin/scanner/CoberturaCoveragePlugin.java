@@ -19,9 +19,15 @@ public class CoberturaCoveragePlugin extends AbstractScannerPlugin<FileResource,
 
     static Logger LOGGER = LoggerFactory.getLogger(CoberturaCoveragePlugin.class);
 
+    private final static String JQASSISTANT_PLUGIN_COBERTURA_FILENAME = "jqassistant.plugin.cobertura.filename";
+    private final static String JQASSISTANT_PLUGIN_COBERTURA_DIRNAME = "jqassistant.plugin.cobertura.dirname";
+
+    private String coberturaFilename = "coverage.cobertura.xml";
+    private String coberturaDirname = "TestResults";
+
     @Override
-    public boolean accepts(FileResource item, String path, Scope scope) throws IOException {
-        return true;
+    public boolean accepts(FileResource item, String path, Scope scope) {
+        return path.endsWith(coberturaFilename) || (path.contains(coberturaDirname) && path.endsWith(".xml"));
     }
 
     @Override
@@ -40,5 +46,22 @@ public class CoberturaCoveragePlugin extends AbstractScannerPlugin<FileResource,
         }
 
         return coverageFileDescriptor;
+    }
+
+    @Override
+    protected void configure() {
+        super.configure();
+
+        if (getProperties().containsKey(JQASSISTANT_PLUGIN_COBERTURA_FILENAME)) {
+            coberturaFilename = getProperty(JQASSISTANT_PLUGIN_COBERTURA_FILENAME, String.class);
+        }
+        if (getProperties().containsKey(JQASSISTANT_PLUGIN_COBERTURA_DIRNAME)) {
+            coberturaDirname = getProperty(JQASSISTANT_PLUGIN_COBERTURA_DIRNAME, String.class);
+        }
+        LOGGER.info(
+                "Cobertura Plugin looks for files named: {} and files in directory (including nested) {}",
+                coberturaFilename,
+                coberturaDirname
+        );
     }
 }
