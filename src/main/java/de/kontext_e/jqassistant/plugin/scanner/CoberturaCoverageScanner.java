@@ -92,12 +92,9 @@ public class CoberturaCoverageScanner {
         int nestedClassSeparatorIndex = className.indexOf("/");
         if (nestedClassSeparatorIndex > -1) return className.substring(0, nestedClassSeparatorIndex);
 
-        // TODO Cannot Check Generic Classes due to missing test data
-        // if (className.contains("<")) {
-        //     String cleanedUpClassName = className.replaceAll(".<.*>\\\\w_?_?\\\\w*\\\\d*", "");
-        //     Pattern pattern = Pattern.compile("(?<ClassName>.+)(?<GenericTypes><.+>)$");
-        //     Matcher matcher = pattern.matcher(cleanedUpClassName);
-        // }
+        int GenericClassMarker = className.indexOf("`");
+        if (GenericClassMarker > -1) return className.substring(0, GenericClassMarker);
+
         return className;
     }
 
