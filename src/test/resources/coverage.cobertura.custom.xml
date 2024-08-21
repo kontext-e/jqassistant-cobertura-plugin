@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<coverage line-rate="0.83" branch-rate="0.8881999999999999" version="1.9" timestamp="1723647017" lines-covered="498" lines-valid="600" branches-covered="151" branches-valid="170">
+  <sources>
+    <source>/TestDirectory/</source>
+  </sources>
+  <packages>
+    <package name="TestNameSpace" line-rate="0.9289000000000001" branch-rate="0.8881999999999999" complexity="183">
+      <classes>
+        <class name="TestNameSpace.NormalClass" filename="TestDirectory/TestFileTwo.cs" line-rate="1" branch-rate="1" complexity="29">
+          <methods>
+            <method name="MethodOne" signature="(VariableOne,Variable2)" line-rate="1" branch-rate="1" complexity="10">
+              <lines>
+                <line number="36" hits="13" branch="False" />
+                <line number="37" hits="13" branch="False" />
+                <line number="39" hits="85" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="259" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="40" hits="23" branch="False" />
+                <line number="41" hits="23" branch="True" condition-coverage="100% (6/6)">
+                  <conditions>
+                    <condition number="46" type="jump" coverage="100%" />
+                    <condition number="59" type="jump" coverage="100%" />
+                    <condition number="82" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="42" hits="1" branch="False" />
+                <line number="43" hits="1" branch="False" />
+                <line number="46" hits="33" branch="False" />
+                <line number="47" hits="22" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="117" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="48" hits="1" branch="False" />
+                <line number="49" hits="1" branch="False" />
+                <line number="50" hits="1" branch="False" />
+                <line number="52" hits="21" branch="False" />
+                <line number="53" hits="21" branch="False" />
+                <line number="54" hits="21" branch="False" />
+                <line number="55" hits="21" branch="False" />
+                <line number="56" hits="22" branch="False" />
+                <line number="58" hits="13" branch="False" />
+                <line number="59" hits="13" branch="False" />
+              </lines>
+            </method>
+            <method name="MethodTwo" signature="(VariableOne,Variable2)" line-rate="1" branch-rate="1" complexity="18">
+              <lines>
+                <line number="62" hits="11" branch="False" />
+                <line number="63" hits="11" branch="True" condition-coverage="100% (18/18)">
+                  <conditions>
+                    <condition number="29" type="jump" coverage="100%" />
+                    <condition number="81" type="jump" coverage="100%" />
+                    <condition number="98" type="jump" coverage="100%" />
+                    <condition number="117" type="jump" coverage="100%" />
+                    <condition number="131" type="jump" coverage="100%" />
+                    <condition number="150" type="jump" coverage="100%" />
+                    <condition number="164" type="jump" coverage="100%" />
+                    <condition number="183" type="jump" coverage="100%" />
+                    <condition number="197" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="64" hits="11" branch="False" />
+                <line number="65" hits="11" branch="False" />
+                <line number="66" hits="11" branch="False" />
+                <line number="67" hits="11" branch="False" />
+                <line number="68" hits="11" branch="False" />
+                <line number="69" hits="11" branch="False" />
+                <line number="70" hits="11" branch="False" />
+                <line number="71" hits="11" branch="False" />
+                <line number="72" hits="11" branch="False" />
+                <line number="73" hits="11" branch="False" />
+                <line number="74" hits="11" branch="False" />
+                <line number="75" hits="11" branch="False" />
+                <line number="76" hits="11" branch="False" />
+                <line number="77" hits="11" branch="False" />
+                <line number="78" hits="11" branch="False" />
+              </lines>
+            </method>
+            <method name=".ctor" signature="(VariableOne)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="14" hits="13" branch="False" />
+                <line number="15" hits="13" branch="False" />
+                <line number="16" hits="13" branch="False" />
+                <line number="17" hits="13" branch="False" />
+                <line number="18" hits="13" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+        <class name="TestNameSpace.ClassWithAsyncMethods/&lt;AsyncMethod&gt;d__4" filename="TestDirectory/TestFileOne.cs" line-rate="1" branch-rate="1" complexity="1">
+          <methods>
+            <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="35" hits="2" branch="False" />
+                <line number="37" hits="2" branch="False" />
+                <line number="38" hits="2" branch="False" />
+                <line number="40" hits="1" branch="False" />
+                <line number="41" hits="1" branch="False" />
+                <line number="42" hits="1" branch="False" />
+                <line number="43" hits="1" branch="False" />
+                <line number="44" hits="1" branch="False" />
+                <line number="46" hits="1" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+        <class name="TestNameSpace.ClassWithAsyncMethods/&lt;AsyncMethod&gt;d__6" filename="TestDirectory/TestFileOne.cs" line-rate="1" branch-rate="1" complexity="2">
+          <methods>
+            <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="2">
+              <lines>
+                <line number="69" hits="7" branch="False" />
+                <line number="71" hits="7" branch="False" />
+                <line number="72" hits="7" branch="False" />
+                <line number="73" hits="30" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="241" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="74" hits="6" branch="False" />
+                <line number="75" hits="6" branch="False" />
+                <line number="76" hits="6" branch="False" />
+                <line number="77" hits="6" branch="False" />
+                <line number="79" hits="1" branch="False" />
+                <line number="80" hits="1" branch="False" />
+                <line number="81" hits="1" branch="False" />
+                <line number="82" hits="1" branch="False" />
+                <line number="83" hits="1" branch="False" />
+                <line number="84" hits="1" branch="False" />
+                <line number="86" hits="6" branch="False" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="69" hits="7" branch="False" />
+            <line number="71" hits="7" branch="False" />
+            <line number="72" hits="7" branch="False" />
+            <line number="73" hits="30" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="241" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="74" hits="6" branch="False" />
+            <line number="75" hits="6" branch="False" />
+            <line number="76" hits="6" branch="False" />
+            <line number="77" hits="6" branch="False" />
+            <line number="79" hits="1" branch="False" />
+            <line number="80" hits="1" branch="False" />
+            <line number="81" hits="1" branch="False" />
+            <line number="82" hits="1" branch="False" />
+            <line number="83" hits="1" branch="False" />
+            <line number="84" hits="1" branch="False" />
+            <line number="86" hits="6" branch="False" />
+          </lines>
+        </class>
+        <class name="TestNameSpace.ClassWithNestedClass/&lt;&gt;c__NestedClassOne10_0" filename="TestDirectory/TestFileOne.cs" line-rate="1" branch-rate="0.6" complexity="10">
+          <methods>
+            <method name="&lt;SurroundingMethod&gt;g__localMethod|0" signature="()" line-rate="1" branch-rate="0.6" complexity="10">
+              <lines>
+                <line number="235" hits="1" branch="False" />
+                <line number="236" hits="1" branch="True" condition-coverage="60% (6/10)">
+                  <conditions>
+                    <condition number="12" type="jump" coverage="100%" />
+                    <condition number="35" type="jump" coverage="50%" />
+                    <condition number="53" type="jump" coverage="50%" />
+                    <condition number="66" type="jump" coverage="50%" />
+                    <condition number="89" type="jump" coverage="50%" />
+                  </conditions>
+                </line>
+                <line number="237" hits="1" branch="False" />
+                <line number="238" hits="1" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+        <class name="TestNameSpace.ClassWithNestedClass/&lt;&gt;c__NestedClassTwo8_0" filename="TestDirectory/TestFileOne.cs" line-rate="1" branch-rate="1" complexity="1">
+          <methods>
+            <method name="&lt;AsyncMethod&gt;b__1" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="180" hits="13" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+        <class name="TestNameSpace.ClassWithLocalMethod/&lt;&gt;c__GeneratedClass10_0" filename="TestDirectory/TestFileTwo.cs" line-rate="1" branch-rate="0.6" complexity="10">
+          <methods>
+            <method name="&lt;SurroundingMethodName&gt;g__LocalMethodName|0" signature="(Variable1)" line-rate="1" branch-rate="0.6" complexity="10">
+              <lines>
+                <line number="235" hits="1" branch="False" />
+                <line number="236" hits="1" branch="True" condition-coverage="60% (6/10)">
+                  <conditions>
+                    <condition number="12" type="jump" coverage="100%" />
+                    <condition number="35" type="jump" coverage="50%" />
+                    <condition number="53" type="jump" coverage="50%" />
+                    <condition number="66" type="jump" coverage="50%" />
+                    <condition number="89" type="jump" coverage="50%" />
+                  </conditions>
+                </line>
+                <line number="237" hits="1" branch="False" />
+                <line number="238" hits="1" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+        <class name="TestNameSpace.GenericClass`2" filename="TestDirectory/TestFileThree.cs" line-rate="1" branch-rate="1" complexity="2">
+          <methods>
+            <method name=".ctor" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="12" hits="13" branch="False" />
+                <line number="13" hits="13" branch="False" />
+                <line number="14" hits="13" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+        <class name="MediazWorkerNode.Api.Client.ApiClient/&lt;&gt;c__DisplayClass15_1`1/&lt;&lt;ExecAsync&gt;b__2&gt;d" filename="MediazWorkerNode.Api\Client\ApiClient.cs" line-rate="1" branch-rate="0" complexity="4">
+          <methods />
+          <lines />
+        </class>
+      </classes>
+    </package>
+    <package name="EmptyPackage" line-rate="1" branch-rate="1" complexity="0">
+      <classes />
+    </package>
+  </packages>
+</coverage>
