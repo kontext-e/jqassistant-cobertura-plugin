@@ -67,7 +67,12 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
         List<MethodCoverageDescriptor> methods = new LinkedList<>();
         store.executeQuery("MATCH (m:Cobertura:Method) return m").forEach(r-> methods.add(r.get("m", MethodCoverageDescriptor.class)));
 
-        methods.forEach(m -> System.out.println(m.getName()));
+        List<String> methodNames = methods.stream().map(MethodCoverageDescriptor::getName).collect(Collectors.toList());
+        assertThat(methodNames.size()).isEqualTo(6);
+        assertThat(methodNames.contains("MethodOne")).isTrue();
+        assertThat(methodNames.contains("MethodTwo")).isTrue();
+        assertThat(methodNames.stream().filter(n -> n.equals(".ctor")).count()).isEqualTo(2);
+        assertThat(methodNames.stream().filter(n -> n.equals("AsyncMethod")).count()).isEqualTo(2);
     }
 
     @Test

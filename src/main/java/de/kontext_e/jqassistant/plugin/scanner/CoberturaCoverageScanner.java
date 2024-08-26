@@ -21,6 +21,7 @@ public class CoberturaCoverageScanner {
 
     public static final String ASYNC_METHOD_REGEX = "(?<ClassName>.+)(/|\\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext$";
     public static final String LOCAL_METHOD_REGEX = ".*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\\|]+)\\|.*";
+    public static final String LAMBDA_METHOD_REGEX = "<.+>.+__";
 
     private final Store store;
     private final ClassCache classCache;
@@ -78,6 +79,10 @@ public class CoberturaCoverageScanner {
         descriptor.setFileName(classCoverage.getFileName());
 
         for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
+            String fullMethodName = methodCoverage.getName() + methodCoverage.getSignature();
+            Matcher matcher = Pattern.compile(LAMBDA_METHOD_REGEX).matcher(fullMethodName);
+            if (matcher.find()) continue;
+
             MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
             descriptor.getMethods().add(methodDescriptor);
         }
