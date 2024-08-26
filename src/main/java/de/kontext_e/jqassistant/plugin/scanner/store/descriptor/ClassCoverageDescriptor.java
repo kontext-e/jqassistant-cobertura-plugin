@@ -25,6 +25,10 @@ public interface ClassCoverageDescriptor extends CoberturaDescriptor {
     String getName();
     void setName(String name);
 
+    @Property("fqn")
+    String getFqn();
+    void setFqn(String fqn);
+
     @Property("fileName")
     String getFileName();
     void setFileName(String fileName);

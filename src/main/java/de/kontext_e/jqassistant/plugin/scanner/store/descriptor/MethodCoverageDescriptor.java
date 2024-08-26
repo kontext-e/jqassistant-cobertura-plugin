@@ -23,6 +23,10 @@ public interface MethodCoverageDescriptor extends CoberturaDescriptor{
     String getName();
     void setName(String name);
 
+    @Property("fqn")
+    String getFqn();
+    void setFqn(String fqn);
+
     @Property("signature")
     String getSignature();
     void setSignature(String signature);

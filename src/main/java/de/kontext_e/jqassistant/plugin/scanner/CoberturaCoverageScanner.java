@@ -68,11 +68,13 @@ public class CoberturaCoverageScanner {
     }
 
     private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
-        String properClassName = parseClassName(classCoverage.getName());
+        String classFQN = parseClassName(classCoverage.getName());
+        int beginIndex = classFQN.lastIndexOf('.');
 
-        ClassCoverageDescriptor descriptor = classCache.findOrCreate(properClassName, classCoverage.getFileName());
+        ClassCoverageDescriptor descriptor = classCache.findOrCreate(classFQN, classCoverage.getFileName());
 
-        descriptor.setName(properClassName);
+        descriptor.setFqn(classFQN);
+        descriptor.setName(beginIndex > 0? classFQN.substring(beginIndex + 1) : classFQN);
         descriptor.setLineRate(classCoverage.getLineRate());
         descriptor.setBranchRate(classCoverage.getBranchRate());
         descriptor.setComplexity(classCoverage.getComplexity());
@@ -95,7 +97,7 @@ public class CoberturaCoverageScanner {
     }
 
     // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
-    private String parseClassName(String className) {
+    private static String parseClassName(String className) {
         if (className == null) return "";
 
         int nestedClassSeparatorIndex = className.indexOf("/");
@@ -110,7 +112,10 @@ public class CoberturaCoverageScanner {
     private MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
         MethodCoverageDescriptor descriptor = store.create(MethodCoverageDescriptor.class);
 
-        descriptor.setName(parseMethodName(methodCoverage, classCoverage));
+        String className = parseClassName(classCoverage.getName());
+        String methodName = parseMethodName(methodCoverage, classCoverage);
+        descriptor.setName(methodName);
+        descriptor.setFqn(className + "." + methodName);
         descriptor.setLineRate(methodCoverage.getLineRate());
         descriptor.setBranchRate(methodCoverage.getBranchRate());
         descriptor.setComplexity(methodCoverage.getComplexity());
