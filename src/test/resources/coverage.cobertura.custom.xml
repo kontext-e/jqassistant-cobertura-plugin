@@ -214,10 +214,6 @@
             </method>
           </methods>
         </class>
-        <class name="MediazWorkerNode.Api.Client.ApiClient/&lt;&gt;c__DisplayClass15_1`1/&lt;&lt;ExecAsync&gt;b__2&gt;d" filename="MediazWorkerNode.Api\Client\ApiClient.cs" line-rate="1" branch-rate="0" complexity="4">
-          <methods />
-          <lines />
-        </class>
       </classes>
     </package>
     <package name="EmptyPackage" line-rate="1" branch-rate="1" complexity="0">
