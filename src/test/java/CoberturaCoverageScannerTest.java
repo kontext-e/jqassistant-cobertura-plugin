@@ -84,6 +84,7 @@ public class CoberturaCoverageScannerTest {
 
         new CoberturaCoverageScanner(store).saveCoverageToNeo4J(coverageReport, mock(CoverageFileDescriptor.class));
 
+        verify(store).create(MethodCoverageDescriptor.class);
         verify(descriptor).setName("calendarEntryInRequestedTimeFrame");
     }
 

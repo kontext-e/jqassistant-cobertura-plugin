@@ -35,9 +35,10 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
     @Test
     @TestStore
     void testClassMetadata(){
-        ClassCoverageDescriptor descriptor = store.executeQuery("MATCH (c:Cobertura:Class) where c.name = 'TestNameSpace.NormalClass' RETURN c").iterator().next().get("c", ClassCoverageDescriptor.class);
+        ClassCoverageDescriptor descriptor = store.executeQuery("MATCH (c:Cobertura:Class) where c.fqn = 'TestNameSpace.NormalClass' RETURN c").iterator().next().get("c", ClassCoverageDescriptor.class);
 
-        assertThat(descriptor.getName()).isEqualTo("TestNameSpace.NormalClass");
+        assertThat(descriptor.getFqn()).isEqualTo("TestNameSpace.NormalClass");
+        assertThat(descriptor.getName()).isEqualTo("NormalClass");
         assertThat(descriptor.getBranchRate()).isEqualTo(1);
         assertThat(descriptor.getLineRate()).isEqualTo(1);
         assertThat(descriptor.getFileName()).isEqualTo("TestDirectory/TestFileTwo.cs");
@@ -52,7 +53,7 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
         List<ClassCoverageDescriptor> classes = new LinkedList<>();
         store.executeQuery("MATCH (c:Cobertura:Class) return c").forEach(r -> classes.add(r.get("c", ClassCoverageDescriptor.class)));
 
-        List<String> classNames = classes.stream().map(ClassCoverageDescriptor::getName).collect(Collectors.toList());
+        List<String> classNames = classes.stream().map(ClassCoverageDescriptor::getFqn).collect(Collectors.toList());
         assertThat(classNames.size()).isEqualTo(5);
         assertThat(classNames.contains("TestNameSpace.NormalClass")).isTrue();
         assertThat(classNames.contains("TestNameSpace.ClassWithLocalMethod")).isTrue();
@@ -68,9 +69,11 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
         store.executeQuery("MATCH (m:Cobertura:Method) return m").forEach(r-> methods.add(r.get("m", MethodCoverageDescriptor.class)));
 
         List<String> methodNames = methods.stream().map(MethodCoverageDescriptor::getName).collect(Collectors.toList());
-        assertThat(methodNames.size()).isEqualTo(6);
+        assertThat(methodNames.size()).isEqualTo(8);
         assertThat(methodNames.contains("MethodOne")).isTrue();
         assertThat(methodNames.contains("MethodTwo")).isTrue();
+        assertThat(methodNames.contains("localMethod")).isTrue();
+        assertThat(methodNames.contains("LocalMethodName")).isTrue();
         assertThat(methodNames.stream().filter(n -> n.equals(".ctor")).count()).isEqualTo(2);
         assertThat(methodNames.stream().filter(n -> n.equals("AsyncMethod")).count()).isEqualTo(2);
     }
@@ -92,7 +95,7 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
     @TestStore
     void testRelationOfClassToMethod(){
         List<MethodCoverageDescriptor> methods = new LinkedList<>();
-        store.executeQuery("MATCH (c:Cobertura:Class)-[:HAS_METHOD]->(m:Cobertura:Method) where c.name='TestNameSpace.NormalClass' RETURN m").forEach(r -> methods.add(r.get("m", MethodCoverageDescriptor.class)));
+        store.executeQuery("MATCH (c:Cobertura:Class)-[:HAS_METHOD]->(m:Cobertura:Method) where c.fqn='TestNameSpace.NormalClass' RETURN m").forEach(r -> methods.add(r.get("m", MethodCoverageDescriptor.class)));
         methods.forEach(m -> System.out.println(m.getName()));
         assertThat(methods.size()).isEqualTo(3);
     }

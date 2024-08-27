@@ -3,6 +3,7 @@ import de.kontext_e.jqassistant.plugin.scanner.model.CoverageReport;
 import de.kontext_e.jqassistant.plugin.scanner.model.MethodCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TestData {
@@ -45,6 +46,7 @@ public class TestData {
                 .complexity(someInt())
                 .name("Method" + someInt())
                 .signature("Signature" + someInt())
+                .lines(new ArrayList<>())
                 .build();
     }
 
