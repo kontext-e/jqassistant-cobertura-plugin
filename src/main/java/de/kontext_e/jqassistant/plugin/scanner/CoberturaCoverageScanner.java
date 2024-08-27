@@ -81,9 +81,9 @@ public class CoberturaCoverageScanner {
         descriptor.setFileName(classCoverage.getFileName());
 
         for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
-            String fullMethodName = methodCoverage.getName() + methodCoverage.getSignature();
+            String fullMethodName = parseMethodName(methodCoverage, classCoverage);
             Matcher matcher = Pattern.compile(LAMBDA_METHOD_REGEX).matcher(fullMethodName);
-            if (matcher.find()) continue;
+            if (fullMethodName.contains("__") && matcher.find()) continue;
 
             MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
             descriptor.getMethods().add(methodDescriptor);
