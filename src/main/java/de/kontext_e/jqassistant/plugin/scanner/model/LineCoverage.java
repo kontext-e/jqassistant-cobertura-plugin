@@ -17,4 +17,7 @@ public class LineCoverage {
     @XmlAttribute(name = "number")
     private int number;
 
+    @XmlAttribute(name = "hits")
+    private int hits;
+
 }

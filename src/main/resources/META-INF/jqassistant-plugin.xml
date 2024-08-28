@@ -10,6 +10,7 @@
         <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor</class>
         <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoverageDescriptor</class>
         <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor</class>
+        <class>de.kontext_e.jqassistant.plugin.scanner.store.descriptor.LineCoverageDescriptor</class>
     </model>
     <scanner>
         <class>de.kontext_e.jqassistant.plugin.scanner.CoberturaCoveragePlugin</class>
