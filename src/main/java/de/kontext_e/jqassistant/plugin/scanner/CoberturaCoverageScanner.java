@@ -2,18 +2,14 @@ package de.kontext_e.jqassistant.plugin.scanner;
 
 import com.buschmais.jqassistant.core.store.api.Store;
 import de.kontext_e.jqassistant.plugin.scanner.caches.ClassCache;
-import de.kontext_e.jqassistant.plugin.scanner.model.ClassCoverage;
-import de.kontext_e.jqassistant.plugin.scanner.model.CoverageReport;
-import de.kontext_e.jqassistant.plugin.scanner.model.MethodCoverage;
-import de.kontext_e.jqassistant.plugin.scanner.model.PackageCoverage;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.CoverageFileDescriptor;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoverageDescriptor;
-import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor;
+import de.kontext_e.jqassistant.plugin.scanner.caches.MethodCache;
+import de.kontext_e.jqassistant.plugin.scanner.model.*;
+import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,10 +21,12 @@ public class CoberturaCoverageScanner {
 
     private final Store store;
     private final ClassCache classCache;
+    private final MethodCache methodCache;
 
     public CoberturaCoverageScanner(Store store) {
         this.store = store;
         this.classCache = new ClassCache(store);
+        this.methodCache = new MethodCache(store);
     }
 
     public static CoverageReport readCoverageReport(File file) {
@@ -110,12 +108,26 @@ public class CoberturaCoverageScanner {
     }
 
     private MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
-        MethodCoverageDescriptor descriptor = store.create(MethodCoverageDescriptor.class);
-
         String className = parseClassName(classCoverage.getName());
         String methodName = parseMethodName(methodCoverage, classCoverage);
+        String fqn = className + "." + methodName;
+
+        MethodCoverageDescriptor descriptor = methodCache.find(fqn);
+        if (descriptor == null) {
+            descriptor = createNewDescriptor(methodCoverage, methodName, fqn);
+
+        } else {
+            addCoverageInformationToExistingDescriptor(descriptor, methodCoverage);
+        }
+
+        return descriptor;
+    }
+
+    private MethodCoverageDescriptor createNewDescriptor(MethodCoverage methodCoverage, String methodName, String fqn) {
+        MethodCoverageDescriptor descriptor;
+        descriptor = methodCache.create();
         descriptor.setName(methodName);
-        descriptor.setFqn(className + "." + methodName);
+        descriptor.setFqn(fqn);
         descriptor.setLineRate(methodCoverage.getLineRate());
         descriptor.setBranchRate(methodCoverage.getBranchRate());
         descriptor.setComplexity(methodCoverage.getComplexity());
@@ -123,7 +135,23 @@ public class CoberturaCoverageScanner {
         descriptor.setFirstLine(methodCoverage.getFirstLine());
         descriptor.setLastLine(methodCoverage.getLastLine());
 
+        for (LineCoverage lineCoverage : methodCoverage.getLines()) {
+            LineCoverageDescriptor lineCoverageDescriptor = analyzeLine(lineCoverage);
+            descriptor.getLines().add(lineCoverageDescriptor);
+        }
+
         return descriptor;
+    }
+
+    private void addCoverageInformationToExistingDescriptor(MethodCoverageDescriptor descriptor, MethodCoverage methodCoverage) {
+        descriptor.getLines().forEach(lineDescriptor -> {
+            Optional<LineCoverage> first = methodCoverage.getLines()
+                    .stream()
+                    .filter(lineCoverage -> lineCoverage.getNumber() == lineDescriptor.getNumber())
+                    .findFirst();
+
+            first.ifPresent(lineCoverage -> lineDescriptor.setHits(lineDescriptor.getHits() + lineCoverage.getHits()));
+        });
     }
 
     // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
@@ -143,5 +171,13 @@ public class CoberturaCoverageScanner {
         }
 
         return methodName;
+    }
+
+    private LineCoverageDescriptor analyzeLine(LineCoverage lineCoverage) {
+        LineCoverageDescriptor descriptor = store.create(LineCoverageDescriptor.class);
+        descriptor.setNumber(lineCoverage.getNumber());
+        descriptor.setHits(lineCoverage.getHits());
+
+        return descriptor;
     }
 }
