@@ -1,6 +1,7 @@
 package de.kontext_e.jqassistant.plugin.scanner.caches;
 
 import com.buschmais.jqassistant.core.store.api.Store;
+import com.buschmais.xo.api.Query;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor;
 
 import java.util.HashMap;
@@ -30,10 +31,20 @@ public class ClassCache {
     }
 
     private Optional<ClassCoverageDescriptor> find(String className, String fileName) {
-        if (!classCache.containsKey(className)) return Optional.empty();
-        if (!classCache.get(className).containsKey(fileName)) return Optional.empty();
+        if (classCache.containsKey(className) && classCache.get(className).containsKey(fileName))
+            return Optional.of(classCache.get(className).get(fileName));
 
-        return Optional.of(classCache.get(className).get(fileName));
+        return findInDB(className, fileName);
+    }
+
+    private Optional<ClassCoverageDescriptor> findInDB(String className, String fileName) {
+        String query = String.format("MATCH (c:Cobertura:Class) where c.fqn='%s' and c.fileName='%s' return c", className, fileName);
+        try (Query.Result<Query.Result.CompositeRowObject> result = store.executeQuery(query)){
+            if (result.iterator().hasNext()) {
+                return Optional.ofNullable(result.iterator().next().get("c", ClassCoverageDescriptor.class));
+            }
+            return Optional.empty();
+        }
     }
 
 }
