@@ -3,6 +3,7 @@ package de.kontext_e.jqassistant.plugin.scanner;
 import com.buschmais.jqassistant.core.store.api.Store;
 import de.kontext_e.jqassistant.plugin.scanner.caches.ClassCache;
 import de.kontext_e.jqassistant.plugin.scanner.caches.MethodCache;
+import de.kontext_e.jqassistant.plugin.scanner.caches.PackageCache;
 import de.kontext_e.jqassistant.plugin.scanner.model.*;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.*;
 import jakarta.xml.bind.JAXBContext;
@@ -22,11 +23,13 @@ public class CoberturaCoverageScanner {
     private final Store store;
     private final ClassCache classCache;
     private final MethodCache methodCache;
+    private final PackageCache packageCache;
 
     public CoberturaCoverageScanner(Store store) {
         this.store = store;
         this.classCache = new ClassCache(store);
         this.methodCache = new MethodCache(store);
+        this.packageCache = new PackageCache(store);
     }
 
     public static CoverageReport readCoverageReport(File file) {
@@ -46,7 +49,7 @@ public class CoberturaCoverageScanner {
     }
 
     private PackageCoverageDescriptor analyzePackage(PackageCoverage packageCoverage) {
-        PackageCoverageDescriptor descriptor = store.create(PackageCoverageDescriptor.class);
+        PackageCoverageDescriptor descriptor = packageCache.findOrCreate(packageCoverage.getName());
 
         descriptor.setName(packageCoverage.getName());
         descriptor.setLineRate(packageCoverage.getLineRate());
@@ -84,6 +87,7 @@ public class CoberturaCoverageScanner {
             if (fullMethodName.contains("__") && matcher.find()) continue;
 
             MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
+            if (descriptor.getMethods().contains(methodDescriptor)) continue;
             descriptor.getMethods().add(methodDescriptor);
         }
 
@@ -115,7 +119,6 @@ public class CoberturaCoverageScanner {
         MethodCoverageDescriptor descriptor = methodCache.find(fqn);
         if (descriptor == null) {
             descriptor = createNewDescriptor(methodCoverage, methodName, fqn);
-
         } else {
             addCoverageInformationToExistingDescriptor(descriptor, methodCoverage);
         }
@@ -145,12 +148,12 @@ public class CoberturaCoverageScanner {
 
     private void addCoverageInformationToExistingDescriptor(MethodCoverageDescriptor descriptor, MethodCoverage methodCoverage) {
         descriptor.getLines().forEach(lineDescriptor -> {
-            Optional<LineCoverage> first = methodCoverage.getLines()
+            Optional<LineCoverage> existingLineCoverage = methodCoverage.getLines()
                     .stream()
                     .filter(lineCoverage -> lineCoverage.getNumber() == lineDescriptor.getNumber())
                     .findFirst();
 
-            first.ifPresent(lineCoverage -> lineDescriptor.setHits(lineDescriptor.getHits() + lineCoverage.getHits()));
+            existingLineCoverage.ifPresent(lineCoverage -> lineDescriptor.setHits(lineDescriptor.getHits() + lineCoverage.getHits()));
         });
     }
 

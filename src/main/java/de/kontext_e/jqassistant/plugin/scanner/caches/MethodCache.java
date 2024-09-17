@@ -19,13 +19,6 @@ public class MethodCache {
         this.store = store;
     }
 
-    public MethodCoverageDescriptor findOrCreate(MethodCoverage methodCoverage) {
-        MethodCoverageDescriptor methodCoverageDescriptor = find(methodCoverage.getName());
-        if (methodCoverageDescriptor != null) return methodCoverageDescriptor;
-
-        return create();
-    }
-
     public MethodCoverageDescriptor create() {
         return store.create(MethodCoverageDescriptor.class);
     }

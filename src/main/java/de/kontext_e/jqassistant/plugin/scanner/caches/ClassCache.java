@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class ClassCache {
 
-    public final Map<String, Map<String, ClassCoverageDescriptor>> classCache;
+    private final Map<String, Map<String, ClassCoverageDescriptor>> classCache;
     private final Store store;
 
     public ClassCache(Store store) {
