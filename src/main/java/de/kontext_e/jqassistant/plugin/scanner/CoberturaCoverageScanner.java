@@ -51,10 +51,12 @@ public class CoberturaCoverageScanner {
     private PackageCoverageDescriptor analyzePackage(PackageCoverage packageCoverage) {
         PackageCoverageDescriptor descriptor = packageCache.findOrCreate(packageCoverage.getName());
 
+        //TODO only do when package descriptor was newly created
         descriptor.setName(packageCoverage.getName());
-        descriptor.setLineRate(packageCoverage.getLineRate());
-        descriptor.setBranchRate(packageCoverage.getBranchRate());
         descriptor.setComplexity(packageCoverage.getComplexity());
+
+        //TODO BranchRate
+        descriptor.setBranchRate(packageCoverage.getBranchRate());
 
         for (ClassCoverage classCoverage : packageCoverage.getClasses()) {
             //Exclude compiler-generated classes
@@ -65,7 +67,23 @@ public class CoberturaCoverageScanner {
             descriptor.getClasses().add(classDescriptor);
         }
 
+        //Must be done after classes have been analyzed
+        updateLineCoverage(descriptor);
+
         return descriptor;
+    }
+
+    private static void updateLineCoverage(PackageCoverageDescriptor descriptor) {
+        long coveredLines = 0;
+        long totalLines = 0;
+        for (ClassCoverageDescriptor classCoverage : descriptor.getClasses()) {
+            for (MethodCoverageDescriptor method : classCoverage.getMethods()) {
+                coveredLines += method.getLines().stream().filter(line -> line.getHits() > 0).count();
+                totalLines += method.getLines().size();
+            }
+        }
+
+        descriptor.setLineRate((float) coveredLines / totalLines);
     }
 
     private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
@@ -74,13 +92,16 @@ public class CoberturaCoverageScanner {
 
         ClassCoverageDescriptor descriptor = classCache.findOrCreate(classFQN, classCoverage.getFileName());
 
+        //TODO Only truly necessary when new node was created
         descriptor.setFqn(classFQN);
         descriptor.setName(beginIndex > 0? classFQN.substring(beginIndex + 1) : classFQN);
-        descriptor.setLineRate(classCoverage.getLineRate());
-        descriptor.setBranchRate(classCoverage.getBranchRate());
         descriptor.setComplexity(classCoverage.getComplexity());
         descriptor.setFileName(classCoverage.getFileName());
 
+        //TODO Branch Coverage
+        //descriptor.setBranchRate(classCoverage.getBranchRate());
+
+        //Always analyse Method, in case new lines are covered
         for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
             String fullMethodName = parseMethodName(methodCoverage, classCoverage);
             Matcher matcher = Pattern.compile(LAMBDA_METHOD_REGEX).matcher(fullMethodName);
@@ -94,8 +115,20 @@ public class CoberturaCoverageScanner {
         //Must be done after methods have been analyzed
         descriptor.setFirstLine(classCoverage.getFirstLine());
         descriptor.setLastLine(classCoverage.getLastLine());
+        updateLineCoverage(descriptor);
 
         return descriptor;
+    }
+
+    private void updateLineCoverage(ClassCoverageDescriptor descriptor) {
+        long coveredLines = 0;
+        long totalLines = 0;
+        for (MethodCoverageDescriptor method : descriptor.getMethods()) {
+            coveredLines += method.getLines().stream().filter(line -> line.getHits() > 0).count();
+            totalLines += method.getLines().size();
+        }
+
+        descriptor.setLineRate((float) coveredLines / totalLines);
     }
 
     // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
@@ -131,7 +164,6 @@ public class CoberturaCoverageScanner {
         descriptor = methodCache.create();
         descriptor.setName(methodName);
         descriptor.setFqn(fqn);
-        descriptor.setLineRate(methodCoverage.getLineRate());
         descriptor.setBranchRate(methodCoverage.getBranchRate());
         descriptor.setComplexity(methodCoverage.getComplexity());
         descriptor.setSignature(methodCoverage.getSignature());
@@ -142,6 +174,11 @@ public class CoberturaCoverageScanner {
             LineCoverageDescriptor lineCoverageDescriptor = analyzeLine(lineCoverage);
             descriptor.getLines().add(lineCoverageDescriptor);
         }
+
+        //Must be done after Lines have been analyzed
+        long coveredLines = descriptor.getLines().stream().filter(line -> line.getHits() > 0).count();
+        long totalLines = descriptor.getLines().size();
+        descriptor.setLineRate((float) coveredLines / totalLines);
 
         return descriptor;
     }
