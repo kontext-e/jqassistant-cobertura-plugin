@@ -3,7 +3,6 @@ package de.kontext_e.jqassistant.plugin.scanner.caches;
 import com.buschmais.jqassistant.core.store.api.Store;
 import com.buschmais.xo.api.Query.Result;
 import com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import de.kontext_e.jqassistant.plugin.scanner.model.MethodCoverage;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoverageDescriptor;
 
 import java.util.HashMap;
@@ -34,7 +33,9 @@ public class MethodCache {
         String query = String.format("MATCH (m:Method:Cobertura) where m.fqn = '%s' RETURN m", methodName);
         try (Result<CompositeRowObject> result = store.executeQuery(query)){
             if (result.iterator().hasNext()) {
-                return result.iterator().next().get("m", MethodCoverageDescriptor.class);
+                MethodCoverageDescriptor descriptor = result.iterator().next().get("m", MethodCoverageDescriptor.class);
+                cache.put(methodName, descriptor);
+                return descriptor;
             }
             return null;
         }

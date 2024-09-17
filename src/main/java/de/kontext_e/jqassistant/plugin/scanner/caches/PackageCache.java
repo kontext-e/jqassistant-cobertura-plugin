@@ -1,12 +1,14 @@
 package de.kontext_e.jqassistant.plugin.scanner.caches;
 
 import com.buschmais.jqassistant.core.store.api.Store;
-import com.buschmais.xo.api.Query;
+import com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.buschmais.xo.api.Query.*;
 
 public class PackageCache {
 
@@ -39,9 +41,11 @@ public class PackageCache {
 
     private Optional<PackageCoverageDescriptor> findInDB(String packageName) {
         String query = String.format("MATCH (p:Cobertura:Package) where p.name='%s' return p", packageName);
-        try (Query.Result<Query.Result.CompositeRowObject> result = store.executeQuery(query)){
+        try (Result<CompositeRowObject> result = store.executeQuery(query)){
             if (result.iterator().hasNext()) {
-                return Optional.ofNullable(result.iterator().next().get("p", PackageCoverageDescriptor.class));
+                PackageCoverageDescriptor descriptor = result.iterator().next().get("p", PackageCoverageDescriptor.class);
+                packageCache.put(packageName, descriptor);
+                return Optional.ofNullable(descriptor);
             }
             return Optional.empty();
         }
