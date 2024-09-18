@@ -10,6 +10,15 @@ repositories {
     mavenCentral()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 dependencies {
     implementation 'com.buschmais.jqassistant.core:scanner:' + project.jqaversion
     implementation 'com.buschmais.jqassistant.core:report:' + project.jqaversion
@@ -25,6 +34,9 @@ dependencies {
     testImplementation 'com.buschmais.jqassistant.core:test:' + project.jqaversion
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 test {
