@@ -12,27 +12,10 @@
               <lines>
                 <line number="36" hits="13" branch="False" />
                 <line number="37" hits="13" branch="False" />
-                <line number="39" hits="85" branch="True" condition-coverage="100% (2/2)">
-                  <conditions>
-                    <condition number="259" type="jump" coverage="100%" />
-                  </conditions>
-                </line>
                 <line number="40" hits="23" branch="False" />
-                <line number="41" hits="23" branch="True" condition-coverage="100% (6/6)">
-                  <conditions>
-                    <condition number="46" type="jump" coverage="100%" />
-                    <condition number="59" type="jump" coverage="100%" />
-                    <condition number="82" type="jump" coverage="100%" />
-                  </conditions>
-                </line>
                 <line number="42" hits="1" branch="False" />
                 <line number="43" hits="1" branch="False" />
                 <line number="46" hits="33" branch="False" />
-                <line number="47" hits="22" branch="True" condition-coverage="100% (2/2)">
-                  <conditions>
-                    <condition number="117" type="jump" coverage="100%" />
-                  </conditions>
-                </line>
                 <line number="48" hits="1" branch="False" />
                 <line number="49" hits="1" branch="False" />
                 <line number="50" hits="1" branch="False" />
@@ -48,19 +31,6 @@
             <method name="MethodTwo" signature="(VariableOne,Variable2)" line-rate="1" branch-rate="1" complexity="18">
               <lines>
                 <line number="62" hits="11" branch="False" />
-                <line number="63" hits="11" branch="True" condition-coverage="100% (18/18)">
-                  <conditions>
-                    <condition number="29" type="jump" coverage="100%" />
-                    <condition number="81" type="jump" coverage="100%" />
-                    <condition number="98" type="jump" coverage="100%" />
-                    <condition number="117" type="jump" coverage="100%" />
-                    <condition number="131" type="jump" coverage="100%" />
-                    <condition number="150" type="jump" coverage="100%" />
-                    <condition number="164" type="jump" coverage="100%" />
-                    <condition number="183" type="jump" coverage="100%" />
-                    <condition number="197" type="jump" coverage="100%" />
-                  </conditions>
-                </line>
                 <line number="64" hits="11" branch="False" />
                 <line number="65" hits="11" branch="False" />
                 <line number="66" hits="11" branch="False" />
@@ -68,23 +38,22 @@
                 <line number="68" hits="11" branch="False" />
                 <line number="69" hits="11" branch="False" />
                 <line number="70" hits="11" branch="False" />
-                <line number="71" hits="11" branch="False" />
-                <line number="72" hits="11" branch="False" />
-                <line number="73" hits="11" branch="False" />
-                <line number="74" hits="11" branch="False" />
-                <line number="75" hits="11" branch="False" />
-                <line number="76" hits="11" branch="False" />
-                <line number="77" hits="11" branch="False" />
-                <line number="78" hits="11" branch="False" />
+                <line number="71" hits="0" branch="False" />
+                <line number="72" hits="0" branch="False" />
+                <line number="73" hits="0" branch="False" />
+                <line number="74" hits="0" branch="False" />
+                <line number="75" hits="0" branch="False" />
+                <line number="76" hits="0" branch="False" />
+                <line number="77" hits="0" branch="False" />
+                <line number="78" hits="0" branch="False" />
               </lines>
             </method>
             <method name=".ctor" signature="(VariableOne)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="14" hits="13" branch="False" />
-                <line number="15" hits="13" branch="False" />
-                <line number="16" hits="13" branch="False" />
-                <line number="17" hits="13" branch="False" />
-                <line number="18" hits="13" branch="False" />
+                <line number="14" hits="0" branch="False" />
+                <line number="15" hits="0" branch="False" />
+                <line number="16" hits="0" branch="False" />
+                <line number="17" hits="0" branch="False" />
               </lines>
             </method>
           </methods>
@@ -218,6 +187,62 @@
     </package>
     <package name="EmptyPackage" line-rate="1" branch-rate="1" complexity="0">
       <classes />
+    </package>
+    <package  name="TestNameSpace" line-rate="0.0" branch-rate="0.0" complexity="183">
+      <classes>
+        <class name="TestNameSpace.NormalClass" filename="TestDirectory/TestFileTwo.cs" line-rate="1" branch-rate="1" complexity="29">
+          <methods>
+            <method name="MethodOne" signature="(VariableOne,Variable2)" line-rate="1" branch-rate="1" complexity="10">
+              <lines>
+                <line number="36" hits="0" branch="False" />
+                <line number="37" hits="0" branch="False" />
+                <line number="40" hits="0" branch="False" />
+                <line number="42" hits="0" branch="False" />
+                <line number="43" hits="0" branch="False" />
+                <line number="46" hits="0" branch="False" />
+                <line number="48" hits="0" branch="False" />
+                <line number="49" hits="0" branch="False" />
+                <line number="50" hits="0" branch="False" />
+                <line number="52" hits="0" branch="False" />
+                <line number="53" hits="0" branch="False" />
+                <line number="54" hits="0" branch="False" />
+                <line number="55" hits="0" branch="False" />
+                <line number="56" hits="0" branch="False" />
+                <line number="58" hits="0" branch="False" />
+                <line number="59" hits="0" branch="False" />
+              </lines>
+            </method>
+            <method name="MethodTwo" signature="(VariableOne,Variable2)" line-rate="1" branch-rate="1" complexity="18">
+              <lines>
+                <line number="62" hits="11" branch="False" />
+                <line number="64" hits="11" branch="False" />
+                <line number="65" hits="11" branch="False" />
+                <line number="66" hits="11" branch="False" />
+                <line number="67" hits="11" branch="False" />
+                <line number="68" hits="11" branch="False" />
+                <line number="69" hits="11" branch="False" />
+                <line number="70" hits="11" branch="False" />
+                <line number="71" hits="11" branch="False" />
+                <line number="72" hits="11" branch="False" />
+                <line number="73" hits="11" branch="False" />
+                <line number="74" hits="11" branch="False" />
+                <line number="75" hits="0" branch="False" />
+                <line number="76" hits="0" branch="False" />
+                <line number="77" hits="0" branch="False" />
+                <line number="78" hits="0" branch="False" />
+              </lines>
+            </method>
+            <method name=".ctor" signature="(VariableOne)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="14" hits="0" branch="False" />
+                <line number="15" hits="0" branch="False" />
+                <line number="16" hits="0" branch="False" />
+                <line number="17" hits="0" branch="False" />
+              </lines>
+            </method>
+          </methods>
+        </class>
+      </classes>
     </package>
   </packages>
 </coverage>

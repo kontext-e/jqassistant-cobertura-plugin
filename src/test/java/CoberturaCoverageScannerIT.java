@@ -96,8 +96,42 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
     void testRelationOfClassToMethod(){
         List<MethodCoverageDescriptor> methods = new LinkedList<>();
         store.executeQuery("MATCH (c:Cobertura:Class)-[:HAS_METHOD]->(m:Cobertura:Method) where c.fqn='TestNameSpace.NormalClass' RETURN m").forEach(r -> methods.add(r.get("m", MethodCoverageDescriptor.class)));
-        methods.forEach(m -> System.out.println(m.getName()));
         assertThat(methods.size()).isEqualTo(3);
     }
 
+    @Test
+    @TestStore
+    void testCalculationOfMethodCoverageFullCoverage(){
+        List<MethodCoverageDescriptor> methods = new LinkedList<>();
+        store.executeQuery("MATCH (m:Cobertura:Method) WHERE m.name='MethodOne' RETURN m").forEach(r -> methods.add(r.get("m", MethodCoverageDescriptor.class)));
+        assertThat(methods.size()).isEqualTo(1);
+        assertThat(methods.get(0).getLineRate()).isEqualTo(1f);
+    }
+
+    @Test
+    @TestStore
+    void testCalculationOfMethodCoverageSomeCoverage(){
+        List<MethodCoverageDescriptor> methods = new LinkedList<>();
+        store.executeQuery("MATCH (m:Cobertura:Method) WHERE m.name='MethodTwo' RETURN m").forEach(r -> methods.add(r.get("m", MethodCoverageDescriptor.class)));
+        assertThat(methods.size()).isEqualTo(1);
+        assertThat(methods.get(0).getLineRate()).isEqualTo(0.75f);
+    }
+
+    @Test
+    @TestStore
+    void testCalculationOfMethodCoverageNoCoverage(){
+        List<MethodCoverageDescriptor> methods = new LinkedList<>();
+        store.executeQuery("MATCH (m:Cobertura:Method) WHERE m.fqn='TestNameSpace.NormalClass..ctor' RETURN m").forEach(r -> methods.add(r.get("m", MethodCoverageDescriptor.class)));
+        assertThat(methods.size()).isEqualTo(1);
+        assertThat(methods.get(0).getLineRate()).isEqualTo(0f);
+    }
+
+    @Test
+    @TestStore
+    void testClassLineCoverage() {
+        List<ClassCoverageDescriptor> classLineCoverage = new LinkedList<>();
+        store.executeQuery("MATCH (c:Cobertura:Class) WHERE c.name = 'NormalClass' RETURN c").forEach(r -> classLineCoverage.add(r.get("c", ClassCoverageDescriptor.class)));
+        assertThat(classLineCoverage.size()).isEqualTo(1);
+        assertThat(classLineCoverage.get(0).getLineRate()).isEqualTo(0.777777777f);
+    }
 }
