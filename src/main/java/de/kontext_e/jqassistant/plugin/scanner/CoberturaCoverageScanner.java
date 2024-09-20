@@ -11,13 +11,13 @@ import jakarta.xml.bind.JAXBException;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static de.kontext_e.jqassistant.plugin.scanner.NameParser.parseClassName;
+import static de.kontext_e.jqassistant.plugin.scanner.NameParser.parseMethodName;
 
 public class CoberturaCoverageScanner {
 
-    public static final String ASYNC_METHOD_REGEX = "(?<ClassName>.+)(/|\\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext$";
-    public static final String LOCAL_METHOD_REGEX = ".*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\\|]+)\\|.*";
+
     public static final String LAMBDA_METHOD_REGEX = "<.+>.+__";
 
     private final Store store;
@@ -131,19 +131,6 @@ public class CoberturaCoverageScanner {
         descriptor.setLineRate((float) coveredLines / totalLines);
     }
 
-    // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
-    private static String parseClassName(String className) {
-        if (className == null) return "";
-
-        int nestedClassSeparatorIndex = className.indexOf("/");
-        if (nestedClassSeparatorIndex > -1) return className.substring(0, nestedClassSeparatorIndex);
-
-        int GenericClassMarker = className.indexOf("`");
-        if (GenericClassMarker > -1) return className.substring(0, GenericClassMarker);
-
-        return className;
-    }
-
     private MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
         String className = parseClassName(classCoverage.getName());
         String methodName = parseMethodName(methodCoverage, classCoverage);
@@ -193,26 +180,6 @@ public class CoberturaCoverageScanner {
             existingLineCoverage.ifPresent(lineCoverage -> lineDescriptor.setHits(lineDescriptor.getHits() + lineCoverage.getHits()));
         });
     }
-
-    // Based on the work done by @danielpalme in https://github.com/danielpalme/ReportGenerator
-    private static String parseMethodName(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
-        String methodName = methodCoverage.getName();
-        String className = classCoverage.getName();
-        String fqnOfMethod = className + methodName;
-
-        Matcher localMethodMatcher = Pattern.compile(LOCAL_METHOD_REGEX).matcher(fqnOfMethod);
-        if (fqnOfMethod.contains("|") && localMethodMatcher.find()) {
-            return localMethodMatcher.group("NestedMethodName");
-        }
-
-        Matcher asyncMethodMatcher = Pattern.compile(ASYNC_METHOD_REGEX).matcher(fqnOfMethod);
-        if (methodName.contains("MoveNext") && asyncMethodMatcher.find()){
-            return asyncMethodMatcher.group("CompilerGeneratedName");
-        }
-
-        return methodName;
-    }
-
     private LineCoverageDescriptor analyzeLine(LineCoverage lineCoverage) {
         LineCoverageDescriptor descriptor = store.create(LineCoverageDescriptor.class);
         descriptor.setNumber(lineCoverage.getNumber());
