@@ -7,6 +7,7 @@ import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoverageDe
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MethodCache {
 
@@ -22,11 +23,11 @@ public class MethodCache {
         return store.create(MethodCoverageDescriptor.class);
     }
 
-    public MethodCoverageDescriptor find(String methodName) {
+    public Optional<MethodCoverageDescriptor> find(String methodName) {
         if (cache.containsKey(methodName)) {
-            return cache.get(methodName);
+            return Optional.ofNullable(cache.get(methodName));
         }
-        return findInDB(methodName);
+        return Optional.ofNullable(findInDB(methodName));
     }
 
     private MethodCoverageDescriptor findInDB(String methodName) {

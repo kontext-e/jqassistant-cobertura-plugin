@@ -21,18 +21,13 @@ public class PackageCache {
         this.store = store;
     }
 
-    public PackageCoverageDescriptor findOrCreate(String packageName) {
-        Optional<PackageCoverageDescriptor> packageDescriptor = find(packageName);
-        return packageDescriptor.orElseGet(() -> create(packageName));
-    }
-
-    private PackageCoverageDescriptor create(String packageName) {
+    public PackageCoverageDescriptor create(String packageName) {
         PackageCoverageDescriptor packageCoverageDescriptor = store.create(PackageCoverageDescriptor.class);
         packageCache.put(packageName, packageCoverageDescriptor);
         return packageCoverageDescriptor;
     }
 
-    private Optional<PackageCoverageDescriptor> find(String packageName) {
+    public Optional<PackageCoverageDescriptor> find(String packageName) {
         if (packageCache.containsKey(packageName)) {
             return Optional.of(packageCache.get(packageName));
         }

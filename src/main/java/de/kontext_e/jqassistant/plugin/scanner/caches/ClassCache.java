@@ -19,19 +19,14 @@ public class ClassCache {
         classCache = new HashMap<>();
     }
 
-    public ClassCoverageDescriptor findOrCreate(String className, String fileName) {
-        Optional<ClassCoverageDescriptor> descriptor = find(className, fileName);
-        return descriptor.orElseGet(() -> createDescriptor(className, fileName));
-    }
-
-    private ClassCoverageDescriptor createDescriptor(String className, String fileName) {
+    public ClassCoverageDescriptor createDescriptor(String className, String fileName) {
         ClassCoverageDescriptor descriptor = store.create(ClassCoverageDescriptor.class);
         Map<String, ClassCoverageDescriptor> fileToDescriptorMap = classCache.computeIfAbsent(className, k -> new HashMap<>());
         fileToDescriptorMap.put(fileName, descriptor);
         return descriptor;
     }
 
-    private Optional<ClassCoverageDescriptor> find(String className, String fileName) {
+    public Optional<ClassCoverageDescriptor> find(String className, String fileName) {
         if (classCache.containsKey(className) && classCache.get(className).containsKey(fileName))
             return Optional.of(classCache.get(className).get(fileName));
 

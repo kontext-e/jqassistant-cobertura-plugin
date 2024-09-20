@@ -50,15 +50,28 @@ public class CoberturaCoverageScanner {
     }
 
     private PackageCoverageDescriptor analyzePackage(PackageCoverage packageCoverage) {
-        PackageCoverageDescriptor descriptor = packageCache.findOrCreate(packageCoverage.getName());
+        PackageCoverageDescriptor descriptor = packageCache
+                .find(packageCoverage.getName())
+                .orElseGet(() -> createPackageCoverageDescriptor(packageCoverage));
 
-        //TODO only do when package descriptor was newly created
+        analyseClasses(packageCoverage, descriptor);
+
+        //Must be done after classes have been analyzed
+        updateLineCoverage(descriptor);
+        //TODO BranchRate descriptor.setBranchRate(packageCoverage.getBranchRate());
+
+        return descriptor;
+    }
+
+    private PackageCoverageDescriptor createPackageCoverageDescriptor(PackageCoverage packageCoverage) {
+        PackageCoverageDescriptor descriptor = packageCache.create(packageCoverage.getName());
         descriptor.setName(packageCoverage.getName());
         descriptor.setComplexity(packageCoverage.getComplexity());
 
-        //TODO BranchRate
-        descriptor.setBranchRate(packageCoverage.getBranchRate());
+        return descriptor;
+    }
 
+    private void analyseClasses(PackageCoverage packageCoverage, PackageCoverageDescriptor descriptor) {
         for (ClassCoverage classCoverage : packageCoverage.getClasses()) {
             //Exclude compiler-generated classes
             if (classCoverage.getName().contains("$")) continue;
@@ -67,11 +80,6 @@ public class CoberturaCoverageScanner {
             if (descriptor.getClasses().contains(classDescriptor)) continue;
             descriptor.getClasses().add(classDescriptor);
         }
-
-        //Must be done after classes have been analyzed
-        updateLineCoverage(descriptor);
-
-        return descriptor;
     }
 
     private static void updateLineCoverage(PackageCoverageDescriptor descriptor) {
@@ -89,34 +97,42 @@ public class CoberturaCoverageScanner {
 
     private ClassCoverageDescriptor analyzeClass(ClassCoverage classCoverage) {
         String classFQN = parseClassName(classCoverage.getName());
-        int beginIndex = classFQN.lastIndexOf('.');
 
-        ClassCoverageDescriptor descriptor = classCache.findOrCreate(classFQN, classCoverage.getFileName());
-
-        //TODO Only truly necessary when new node was created
-        descriptor.setFqn(classFQN);
-        descriptor.setName(beginIndex > 0? classFQN.substring(beginIndex + 1) : classFQN);
-        descriptor.setComplexity(classCoverage.getComplexity());
-        descriptor.setFileName(classCoverage.getFileName());
-
-        //TODO Branch Coverage
-        //descriptor.setBranchRate(classCoverage.getBranchRate());
+        ClassCoverageDescriptor descriptor = classCache
+                .find(classFQN, classCoverage.getFileName())
+                .orElseGet(() -> createClassCoverageDescriptor(classCoverage, classFQN));
 
         //Always analyse Method, in case new lines are covered
-        for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
-            String fullMethodName = parseMethodName(methodCoverage, classCoverage);
-            Matcher matcher = Pattern.compile(LAMBDA_METHOD_REGEX).matcher(fullMethodName);
-            if (fullMethodName.contains("__") && matcher.find()) continue;
-
-            MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
-            if (descriptor.getMethods().contains(methodDescriptor)) continue;
-            descriptor.getMethods().add(methodDescriptor);
-        }
+        analyzeMethods(classCoverage, descriptor);
 
         //Must be done after methods have been analyzed
         descriptor.setFirstLine(classCoverage.getFirstLine());
         descriptor.setLastLine(classCoverage.getLastLine());
         updateLineCoverage(descriptor);
+        //TODO Branch Coverage descriptor.setBranchRate(classCoverage.getBranchRate());
+
+        return descriptor;
+    }
+
+    private void analyzeMethods(ClassCoverage classCoverage, ClassCoverageDescriptor descriptor) {
+        for (MethodCoverage methodCoverage : classCoverage.getMethods()) {
+            String fullMethodName = parseMethodName(methodCoverage.getName(), classCoverage.getName());
+            if (fullMethodName.contains("__") && fullMethodName.matches(LAMBDA_METHOD_REGEX)) continue;
+
+            MethodCoverageDescriptor methodDescriptor = analyzeMethod(methodCoverage, classCoverage);
+            if (descriptor.getMethods().contains(methodDescriptor)) continue;
+            descriptor.getMethods().add(methodDescriptor);
+        }
+    }
+
+    private ClassCoverageDescriptor createClassCoverageDescriptor(ClassCoverage classCoverage, String classFQN) {
+        ClassCoverageDescriptor descriptor = classCache.createDescriptor(classCoverage.getName(), classCoverage.getFileName());
+        int beginIndex = classFQN.lastIndexOf('.');
+
+        descriptor.setFqn(classFQN);
+        descriptor.setName(beginIndex > 0? classFQN.substring(beginIndex + 1) : classFQN);
+        descriptor.setComplexity(classCoverage.getComplexity());
+        descriptor.setFileName(classCoverage.getFileName());
 
         return descriptor;
     }
@@ -134,22 +150,28 @@ public class CoberturaCoverageScanner {
 
     private MethodCoverageDescriptor analyzeMethod(MethodCoverage methodCoverage, ClassCoverage classCoverage) {
         String className = parseClassName(classCoverage.getName());
-        String methodName = parseMethodName(methodCoverage, classCoverage);
+        String methodName = parseMethodName(methodCoverage.getName(), classCoverage.getName());
         String fqn = className + "." + methodName;
 
-        MethodCoverageDescriptor descriptor = methodCache.find(fqn);
-        if (descriptor == null) {
-            descriptor = createNewDescriptor(methodCoverage, methodName, fqn);
-        } else {
-            addCoverageInformationToExistingDescriptor(descriptor, methodCoverage);
+        MethodCoverageDescriptor methodDescriptor = methodCache.find(fqn).orElseGet(() -> createNewDescriptor(methodCoverage, methodName, fqn));
+
+        for (LineCoverage lineCoverage : methodCoverage.getLines()) {
+            LineCoverageDescriptor lineCoverageDescriptor = analyzeLine(lineCoverage, fqn);
+            if (methodDescriptor.getLines().contains(lineCoverageDescriptor)) continue;
+            methodDescriptor.getLines().add(lineCoverageDescriptor);
         }
 
-        return descriptor;
+        //FIXME "EMS.APIService.Persistence.Context.DataContext.OnModelCreating"
+        //Must be done after Lines have been analyzed
+        long coveredLines = methodDescriptor.getLines().stream().filter(line -> line.getHits() > 0).count();
+        long totalLines = methodDescriptor.getLines().size();
+        methodDescriptor.setLineRate((float) coveredLines / totalLines);
+
+        return methodDescriptor;
     }
 
     private MethodCoverageDescriptor createNewDescriptor(MethodCoverage methodCoverage, String methodName, String fqn) {
-        MethodCoverageDescriptor descriptor;
-        descriptor = methodCache.create();
+        MethodCoverageDescriptor descriptor = methodCache.create();
         descriptor.setName(methodName);
         descriptor.setFqn(fqn);
         descriptor.setBranchRate(methodCoverage.getBranchRate());
@@ -157,16 +179,6 @@ public class CoberturaCoverageScanner {
         descriptor.setSignature(methodCoverage.getSignature());
         descriptor.setFirstLine(methodCoverage.getFirstLine());
         descriptor.setLastLine(methodCoverage.getLastLine());
-
-        for (LineCoverage lineCoverage : methodCoverage.getLines()) {
-            LineCoverageDescriptor lineCoverageDescriptor = analyzeLine(lineCoverage);
-            descriptor.getLines().add(lineCoverageDescriptor);
-        }
-
-        //Must be done after Lines have been analyzed
-        long coveredLines = descriptor.getLines().stream().filter(line -> line.getHits() > 0).count();
-        long totalLines = descriptor.getLines().size();
-        descriptor.setLineRate((float) coveredLines / totalLines);
 
         return descriptor;
     }
