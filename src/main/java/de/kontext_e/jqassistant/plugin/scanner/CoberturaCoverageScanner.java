@@ -2,6 +2,7 @@ package de.kontext_e.jqassistant.plugin.scanner;
 
 import com.buschmais.jqassistant.core.store.api.Store;
 import de.kontext_e.jqassistant.plugin.scanner.caches.ClassCache;
+import de.kontext_e.jqassistant.plugin.scanner.caches.LineCache;
 import de.kontext_e.jqassistant.plugin.scanner.caches.MethodCache;
 import de.kontext_e.jqassistant.plugin.scanner.caches.PackageCache;
 import de.kontext_e.jqassistant.plugin.scanner.model.*;
@@ -20,16 +21,16 @@ public class CoberturaCoverageScanner {
 
     public static final String LAMBDA_METHOD_REGEX = "<.+>.+__";
 
-    private final Store store;
     private final ClassCache classCache;
     private final MethodCache methodCache;
     private final PackageCache packageCache;
+    private final LineCache lineCache;
 
     public CoberturaCoverageScanner(Store store) {
-        this.store = store;
         this.classCache = new ClassCache(store);
         this.methodCache = new MethodCache(store);
         this.packageCache = new PackageCache(store);
+        this.lineCache = new LineCache(store);
     }
 
     public static CoverageReport readCoverageReport(File file) {
@@ -170,21 +171,18 @@ public class CoberturaCoverageScanner {
         return descriptor;
     }
 
-    private void addCoverageInformationToExistingDescriptor(MethodCoverageDescriptor descriptor, MethodCoverage methodCoverage) {
-        descriptor.getLines().forEach(lineDescriptor -> {
-            Optional<LineCoverage> existingLineCoverage = methodCoverage.getLines()
-                    .stream()
-                    .filter(lineCoverage -> lineCoverage.getNumber() == lineDescriptor.getNumber())
-                    .findFirst();
+    private LineCoverageDescriptor analyzeLine(LineCoverage lineCoverage, String fqn) {
+        Optional<LineCoverageDescriptor> descriptor = lineCache.find(fqn, lineCoverage.getNumber());
 
-            existingLineCoverage.ifPresent(lineCoverage -> lineDescriptor.setHits(lineDescriptor.getHits() + lineCoverage.getHits()));
-        });
-    }
-    private LineCoverageDescriptor analyzeLine(LineCoverage lineCoverage) {
-        LineCoverageDescriptor descriptor = store.create(LineCoverageDescriptor.class);
-        descriptor.setNumber(lineCoverage.getNumber());
-        descriptor.setHits(lineCoverage.getHits());
-
-        return descriptor;
+        LineCoverageDescriptor lineCoverageDescriptor;
+        if (descriptor.isPresent()) {
+            lineCoverageDescriptor = descriptor.get();
+            lineCoverageDescriptor.setHits(lineCoverageDescriptor.getHits() + lineCoverage.getHits());
+        } else {
+            lineCoverageDescriptor = lineCache.createDescriptor(fqn, lineCoverage.getNumber());
+            lineCoverageDescriptor.setNumber(lineCoverage.getNumber());
+            lineCoverageDescriptor.setHits(lineCoverage.getHits());
+        }
+        return lineCoverageDescriptor;
     }
 }
