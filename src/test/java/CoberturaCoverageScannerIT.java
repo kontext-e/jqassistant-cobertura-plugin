@@ -134,4 +134,13 @@ public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
         assertThat(classLineCoverage.size()).isEqualTo(1);
         assertThat(classLineCoverage.get(0).getLineRate()).isEqualTo(0.777777777f);
     }
+
+    @Test
+    @TestStore
+    void testPackageLineCoverage(){
+        List<PackageCoverageDescriptor> packageLineCoverage = new LinkedList<>();
+        store.executeQuery("MATCH (p:Cobertura:Package) WHERE p.name = 'TestNameSpace' RETURN p").forEach(r -> packageLineCoverage.add(r.get("p", PackageCoverageDescriptor.class)));
+        assertThat(packageLineCoverage.size()).isEqualTo(1);
+        assertThat(packageLineCoverage.get(0).getLineRate()).isEqualTo(0.6760563f);
+    }
 }

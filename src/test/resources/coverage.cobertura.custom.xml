@@ -79,25 +79,25 @@
           <methods>
             <method name="MoveNext" signature="()" line-rate="1" branch-rate="1" complexity="2">
               <lines>
-                <line number="69" hits="7" branch="False" />
-                <line number="71" hits="7" branch="False" />
-                <line number="72" hits="7" branch="False" />
-                <line number="73" hits="30" branch="True" condition-coverage="100% (2/2)">
+                <line number="69" hits="0" branch="False" />
+                <line number="71" hits="0" branch="False" />
+                <line number="72" hits="0" branch="False" />
+                <line number="73" hits="0" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="241" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="74" hits="6" branch="False" />
-                <line number="75" hits="6" branch="False" />
-                <line number="76" hits="6" branch="False" />
-                <line number="77" hits="6" branch="False" />
-                <line number="79" hits="1" branch="False" />
-                <line number="80" hits="1" branch="False" />
-                <line number="81" hits="1" branch="False" />
-                <line number="82" hits="1" branch="False" />
-                <line number="83" hits="1" branch="False" />
-                <line number="84" hits="1" branch="False" />
-                <line number="86" hits="6" branch="False" />
+                <line number="74" hits="0" branch="False" />
+                <line number="75" hits="0" branch="False" />
+                <line number="76" hits="0" branch="False" />
+                <line number="77" hits="0" branch="False" />
+                <line number="79" hits="0" branch="False" />
+                <line number="80" hits="0" branch="False" />
+                <line number="81" hits="0" branch="False" />
+                <line number="82" hits="0" branch="False" />
+                <line number="83" hits="0" branch="False" />
+                <line number="84" hits="0" branch="False" />
+                <line number="86" hits="0" branch="False" />
               </lines>
             </method>
           </methods>
