@@ -1,0 +1,14 @@
+jqassistant:
+  plugins:
+    - group-id: "de.kontext-e.jqassistant.plugin"
+      artifact-id: "jqassistant.plugin.cobertura"
+      version: "0.1.1-SNAPSHOT"
+  scan:
+    include:
+      files:
+        - "src/test/resources/coverage.cobertura.custom.xml"
+    properties:
+      jqassistant.plugin.cobertura.filename: ".xml"
+  repositories:
+    #Local Repository only necessary for development
+    local: C:\Users\WilThi\.m2\repository\
