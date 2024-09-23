@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
     id 'de.kontext_e.jqassistant.gradle' version '2.1.0'
 }
 
@@ -8,6 +10,10 @@ version = '0.1.0-SNAPSHOT'
 project.ext["jqaversion"] = "2.1.0"
 
 repositories {
+    mavenLocal()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
     mavenCentral()
 }
 
@@ -42,4 +48,55 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = 'ke-jqassistant-plugins'
+                packaging = 'jar'
+                description = 'jQAssistant Git plugin sponsored by Kontext E'
+                url = 'https://github.com/kontext-e/jqassistant-git-plugin'
+
+                licenses {
+                    license {
+                        name = 'GNU General Public License, v3'
+                        url = 'http://www.gnu.org/licenses/gpl-3.0.html'
+                        distribution = 'repo'
+                    }
+                }
+
+                developers {
+                    developer{
+                        id = 'william-thimm'
+                        name = 'William Thimm'
+                        email = 'w.thimm@kontext-e.de'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            if (project.version.toUpperCase().contains("SNAPSHOT")){
+                url = "https://oss.sonatype.org/content/repositories/snapshots"
+            } else {
+                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            }
+            credentials{
+                username = sonatypeUsername
+                password = sonatypePassword
+            }
+        }
+        mavenLocal()
+    }
+}
+
+signing {
+    //I assume this only works with gpg installed.
+    //On windows this comes packaged with Kleopatra
+    useGpgCmd()
+    sign publishing.publications.mavenJava
 }
