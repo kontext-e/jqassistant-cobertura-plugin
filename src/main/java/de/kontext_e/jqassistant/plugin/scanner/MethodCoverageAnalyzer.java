@@ -36,7 +36,6 @@ public class MethodCoverageAnalyzer {
             methodDescriptor.getLines().add(lineCoverageDescriptor);
         }
 
-        //FIXME "EMS.APIService.Persistence.Context.DataContext.OnModelCreating"
         //Must be done after Lines have been analyzed
         long coveredLines = methodDescriptor.getLines().stream().filter(line -> line.getHits() > 0).count();
         long totalLines = methodDescriptor.getLines().size();

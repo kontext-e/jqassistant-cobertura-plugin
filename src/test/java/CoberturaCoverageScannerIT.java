@@ -1,18 +1,13 @@
-import com.buschmais.jqassistant.plugin.common.api.model.FileDescriptor;
-import com.buschmais.xo.api.Query;
-import com.buschmais.xo.api.ResultIterator;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.ClassCoverageDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.MethodCoverageDescriptor;
 import de.kontext_e.jqassistant.plugin.scanner.store.descriptor.PackageCoverageDescriptor;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.annotation.Testable;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class CoberturaCoverageScannerIT extends AbstractCoberturaScannerIT {
 
