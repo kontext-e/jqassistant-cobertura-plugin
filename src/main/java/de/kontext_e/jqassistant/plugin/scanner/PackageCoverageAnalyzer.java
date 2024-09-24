@@ -25,7 +25,6 @@ public class PackageCoverageAnalyzer {
 
         //Must be done after classes have been analyzed
         updateLineCoverage(descriptor);
-        //TODO BranchRate descriptor.setBranchRate(packageCoverage.getBranchRate());
 
         return descriptor;
     }
@@ -34,6 +33,7 @@ public class PackageCoverageAnalyzer {
         PackageCoverageDescriptor descriptor = packageCache.create(packageCoverage.getName());
         descriptor.setName(packageCoverage.getName());
         descriptor.setComplexity(packageCoverage.getComplexity());
+        descriptor.setBranchRate(packageCoverage.getBranchRate());
 
         return descriptor;
     }
